@@ -1,0 +1,167 @@
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f5f7fa;
+  color: #111827;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.app {
+  min-height: 100vh;
+  padding: 20px;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.app-header {
+  margin-bottom: 24px;
+}
+
+.app-header h1 {
+  margin-bottom: 8px;
+  font-size: 2rem;
+}
+
+.app-header p {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.dashboard {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.card {
+  background: white;
+  border: 2px solid #d1d5db;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.card h2 {
+  font-size: 1rem;
+  margin: 0 0 8px;
+}
+
+.card p {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.primary-button {
+  background: #1d4ed8;
+  color: white;
+  border: 2px solid #1e40af;
+  border-radius: 8px;
+  padding: 12px 18px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.primary-button:hover,
+.primary-button:focus {
+  background: #1e40af;
+}
+
+.form-section,
+.inventory-section {
+  background: white;
+  border: 2px solid #d1d5db;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-weight: bold;
+}
+
+input,
+select,
+textarea {
+  padding: 12px;
+  border: 2px solid #6b7280;
+  border-radius: 8px;
+  background: white;
+  color: #111827;
+}
+
+textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.button-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.button-row button {
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 2px solid #374151;
+  background: white;
+  color: #111827;
+}
+
+.item-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.item-card {
+  border: 2px solid #d1d5db;
+  border-radius: 10px;
+  padding: 14px;
+}
+
+.item-card h3 {
+  margin-top: 0;
+}
+
+.item-card p {
+  margin: 8px 0;
+}
+
+@media (max-width: 480px) {
+  .dashboard {
+    grid-template-columns: 1fr;
+  }
+
+  .app {
+    padding: 14px;
+  }
+}
