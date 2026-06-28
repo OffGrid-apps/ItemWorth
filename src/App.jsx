@@ -12,14 +12,13 @@ import InventoryList from "./components/InventoryList";
 function App() {
   const [items, setItems] = useState([]);
   const [editingItem, setEditingItem] = useState(null);
-
   const [loaded, setLoaded] = useState(false);
-  
+
   useEffect(() => {
     setItems(loadItems());
     setLoaded(true);
   }, []);
-  
+
   useEffect(() => {
     if (loaded) {
       saveItems(items);
@@ -82,32 +81,53 @@ function App() {
   return (
     <main className="app">
       <header className="app-header">
-        <div
+        <p
           style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            marginBottom: '1rem'
+            marginBottom: "0.5rem",
+            fontWeight: 700,
+            color: "var(--color-secondary)",
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
+            fontSize: "0.8rem",
           }}
         >
-          <h1>ItemWorth</h1>
-        
+          Personal Inventory
+        </p>
+
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-start",
+            gap: "1rem",
+            flexWrap: "wrap",
+          }}
+        >
+          <div>
+            <h1>ItemWorth</h1>
+
+            <p
+              style={{
+                marginTop: "0.75rem",
+                maxWidth: "42rem",
+              }}
+            >
+              Organize, value, and manage everything you own in one
+              secure, offline-first inventory.
+            </p>
+          </div>
+
           <a
             href="/about.html"
+            className="primary-button"
             style={{
-              textDecoration: 'none',
-              padding: '0.5rem 0.75rem',
-              border: '1px solid #888',
-              borderRadius: '6px',
-              fontSize: '0.9rem'
+              textDecoration: "none",
+              minWidth: "120px",
             }}
           >
             About
           </a>
         </div>
-        <p>
-          Track what you own and estimate its value.
-        </p>
       </header>
 
       <Dashboard
@@ -119,7 +139,7 @@ function App() {
         className="primary-button"
         onClick={addItem}
       >
-        Add Item
+        + Add Item
       </button>
 
       {editingItem && (
