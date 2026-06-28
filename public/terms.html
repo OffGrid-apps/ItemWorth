@@ -1,23 +1,99 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Terms of Use</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#1d4f91" />
+  <title>Terms of Use — ItemWorth</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html {
+      font-family: Inter, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 16px; background: #f4f7fb; color: #0f172a;
+      -webkit-font-smoothing: antialiased;
+    }
+    body { min-height: 100vh; }
+    a { color: #1d4f91; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .page { max-width: 600px; margin: 0 auto; padding: 48px 24px 80px; }
+    .back-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 0.8125rem; font-weight: 600; color: #475569;
+      margin-bottom: 40px; padding: 8px 14px;
+      border: 1px solid #dde3ee; border-radius: 10px; background: #fff;
+      transition: color 120ms, border-color 120ms;
+    }
+    .back-link:hover { color: #1d4f91; border-color: #1d4f91; text-decoration: none; }
+    .eyebrow { font-size: 0.6875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #94a3b8; margin-bottom: 8px; }
+    h1 { font-size: 1.75rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 8px; }
+    .meta { font-size: 0.8125rem; color: #94a3b8; margin-bottom: 40px; }
+    .card {
+      background: #fff; border: 1px solid #dde3ee; border-radius: 16px;
+      padding: 28px; margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(15,23,42,.06);
+    }
+    .card h2 { font-size: 1rem; font-weight: 700; color: #0f172a; letter-spacing: -0.02em; margin-bottom: 12px; }
+    .card p { font-size: 0.9375rem; color: #475569; line-height: 1.75; }
+    .footer-links { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 32px; }
+    .footer-links a { font-size: 0.8125rem; color: #94a3b8; font-weight: 500; }
+    .footer-links a:hover { color: #1d4f91; }
+    .copyright { margin-top: 12px; font-size: 0.75rem; color: #cbd5e1; }
+  </style>
 </head>
 <body>
+  <div class="page">
+    <a href="/about.html" class="back-link">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      About
+    </a>
 
-<h1>Terms of Use</h1>
+    <p class="eyebrow">ItemWorth</p>
+    <h1>Terms of Use</h1>
+    <p class="meta">Last updated: June 2026</p>
 
-<p>ItemWorth is provided "as is" without warranties.</p>
+    <div class="card">
+      <h2>Use at your own discretion</h2>
+      <p>
+        ItemWorth is provided as-is, without warranties of any kind. While we
+        aim to build reliable software, we make no guarantees about accuracy,
+        availability, or fitness for any particular purpose.
+      </p>
+    </div>
 
-<p>Inventory values are estimates entered by the user.</p>
+    <div class="card">
+      <h2>Estimated values</h2>
+      <p>
+        All item values entered in ItemWorth are user-provided estimates.
+        ItemWorth does not verify or guarantee these values. Do not rely on
+        ItemWorth as the sole record for insurance claims, financial decisions,
+        or legal purposes.
+      </p>
+    </div>
 
-<p>Users are responsible for maintaining backups of important information.</p>
+    <div class="card">
+      <h2>Your data responsibility</h2>
+      <p>
+        Your inventory data is stored only in your browser's local storage.
+        You are responsible for maintaining backups of important information.
+        Clearing browser data, reinstalling, or switching devices will
+        permanently delete your inventory.
+      </p>
+    </div>
 
-<p>ItemWorth should not be relied upon as the sole record for insurance claims or financial decisions.</p>
+    <div class="card">
+      <h2>Changes to these terms</h2>
+      <p>
+        These terms may be updated from time to time. Continued use of
+        ItemWorth constitutes acceptance of any updated terms.
+      </p>
+    </div>
 
-<p><a href="/about.html">Back</a></p>
-
+    <div class="footer-links">
+      <a href="/privacy.html">Privacy Policy</a>
+      <a href="/about.html">About</a>
+      <a href="/">Back to ItemWorth</a>
+    </div>
+    <p class="copyright">© 2026 Dani Terry. All rights reserved.</p>
+  </div>
 </body>
 </html>

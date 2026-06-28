@@ -15,8 +15,8 @@ export default defineConfig({
         name: 'ItemWorth',
         short_name: 'ItemWorth',
         description: 'Offline inventory and value tracker',
-        theme_color: '#ffffff',
-        background_color: '#ffffff',
+        theme_color: '#1d4f91',
+        background_color: '#f4f7fb',
         display: 'standalone',
         start_url: '/',
         icons: [
