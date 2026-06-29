@@ -1,3 +1,6 @@
+import { useMemo, useState } from "react";
+import { CATEGORIES } from "../utils/storage";
+
 /* ── Icons ───────────────────────────────────────────────── */
 function LocationIcon() {
   return (
@@ -57,6 +60,40 @@ function BoxIcon() {
   );
 }
 
+function SearchIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" strokeWidth="2" strokeLinecap="round"
+      strokeLinejoin="round" aria-hidden="true">
+      <circle cx="11" cy="11" r="8"/>
+      <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+    </svg>
+  );
+}
+
+function XIcon({ size = 14 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"
+      strokeLinejoin="round" aria-hidden="true">
+      <line x1="18" y1="6" x2="6" y2="18"/>
+      <line x1="6" y1="6" x2="18" y2="18"/>
+    </svg>
+  );
+}
+
+function DownloadIcon() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" strokeWidth="2" strokeLinecap="round"
+      strokeLinejoin="round" aria-hidden="true">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+      <polyline points="7 10 12 15 17 10"/>
+      <line x1="12" y1="15" x2="12" y2="3"/>
+    </svg>
+  );
+}
+
 /* ── Helpers ─────────────────────────────────────────────── */
 function getBadgeClass(category) {
   return `badge badge-${category.toLowerCase().replace(/\s+/g, "-")}`;
@@ -67,6 +104,49 @@ function formatCurrency(amount) {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
+}
+
+const SORT_OPTIONS = [
+  { value: "newest",     label: "Newest first" },
+  { value: "name-asc",   label: "Name A–Z" },
+  { value: "name-desc",  label: "Name Z–A" },
+  { value: "value-desc", label: "Highest value" },
+  { value: "value-asc",  label: "Lowest value" },
+];
+
+function exportCSV(items) {
+  const headers = ["Name", "Category", "Location", "Quantity", "Unit Value", "Total Value", "Notes", "Date Added"];
+
+  const escape = (val) => {
+    const str = String(val ?? "");
+    return str.includes(",") || str.includes('"') || str.includes("\n")
+      ? `"${str.replace(/"/g, '""')}"`
+      : str;
+  };
+
+  const rows = items.map((item) => {
+    const qty = Number(item.quantity) || 0;
+    const unit = Number(item.estimatedValue) || 0;
+    return [
+      item.name,
+      item.category,
+      item.location,
+      qty,
+      unit.toFixed(2),
+      (qty * unit).toFixed(2),
+      item.notes,
+      item.createdAt ? new Date(item.createdAt).toLocaleDateString() : "",
+    ].map(escape).join(",");
+  });
+
+  const csv = [headers.join(","), ...rows].join("\r\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `itemworth-export-${new Date().toISOString().slice(0, 10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
 /* ── Item Card ───────────────────────────────────────────── */
@@ -82,7 +162,6 @@ function ItemCard({ item, onEdit, onDelete }) {
       aria-label={`${item.name}, ${item.category}`}
     >
       <div className="item-card__body">
-        {/* Name + Category */}
         <div className="item-card__top">
           <h3 className="item-card__name">{item.name}</h3>
           <span className={getBadgeClass(item.category)}>
@@ -90,7 +169,6 @@ function ItemCard({ item, onEdit, onDelete }) {
           </span>
         </div>
 
-        {/* Meta: location + quantity */}
         <div className="item-card__meta">
           {item.location && (
             <span className="item-card__meta-item">
@@ -104,7 +182,6 @@ function ItemCard({ item, onEdit, onDelete }) {
           </span>
         </div>
 
-        {/* Value */}
         <div className="item-card__value-row">
           <span className="item-card__value" aria-label={`Total value $${formatCurrency(totalValue)}`}>
             ${formatCurrency(totalValue)}
@@ -116,13 +193,11 @@ function ItemCard({ item, onEdit, onDelete }) {
           )}
         </div>
 
-        {/* Notes */}
         {item.notes && (
           <p className="item-card__notes">{item.notes}</p>
         )}
       </div>
 
-      {/* Actions */}
       <div className="item-card__actions">
         <button
           type="button"
@@ -148,8 +223,8 @@ function ItemCard({ item, onEdit, onDelete }) {
   );
 }
 
-/* ── Empty State ─────────────────────────────────────────── */
-function EmptyState({ onAdd }) {
+/* ── Empty States ────────────────────────────────────────── */
+function EmptyInventory({ onAdd }) {
   return (
     <div className="empty-state">
       <div className="empty-state__icon">
@@ -172,28 +247,239 @@ function EmptyState({ onAdd }) {
   );
 }
 
+function NoResults({ onClear }) {
+  return (
+    <div className="empty-state empty-state--no-results">
+      <div className="empty-state__icon">
+        <SearchIcon />
+      </div>
+      <p className="empty-state__title">No items match</p>
+      <p className="empty-state__body">
+        Try adjusting your search or filters.
+      </p>
+      <button type="button" className="btn btn-secondary" onClick={onClear}>
+        Clear filters
+      </button>
+    </div>
+  );
+}
+
+/* ── Inventory Toolbar ───────────────────────────────────── */
+function InventoryToolbar({
+  query, onQueryChange,
+  activeCategory, onCategoryChange,
+  sortBy, onSortChange,
+  categoryCounts,
+  totalItems, visibleItems,
+  onExport,
+}) {
+  const hasFilters = query.trim() !== "" || activeCategory !== "All";
+  const showCount = hasFilters || sortBy !== "newest";
+
+  return (
+    <div className="inv-toolbar">
+      {/* Row 1: Search + Sort + Export */}
+      <div className="inv-toolbar__top">
+        <div className="inv-search">
+          <span className="inv-search__icon">
+            <SearchIcon />
+          </span>
+          <input
+            type="search"
+            className="inv-search__input"
+            placeholder="Search items…"
+            value={query}
+            onChange={(e) => onQueryChange(e.target.value)}
+            aria-label="Search inventory"
+          />
+          {query && (
+            <button
+              type="button"
+              className="inv-search__clear"
+              onClick={() => onQueryChange("")}
+              aria-label="Clear search"
+            >
+              <XIcon size={13} />
+            </button>
+          )}
+        </div>
+
+        <div className="inv-toolbar__right">
+          <label className="sr-only" htmlFor="inv-sort">Sort by</label>
+          <select
+            id="inv-sort"
+            className="inv-sort"
+            value={sortBy}
+            onChange={(e) => onSortChange(e.target.value)}
+          >
+            {SORT_OPTIONS.map((opt) => (
+              <option key={opt.value} value={opt.value}>{opt.label}</option>
+            ))}
+          </select>
+
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={onExport}
+            aria-label="Export inventory as CSV"
+            title="Export CSV"
+          >
+            <DownloadIcon />
+            <span className="inv-export-label">Export</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Row 2: Category chips */}
+      <div className="inv-chips" role="group" aria-label="Filter by category">
+        {["All", ...CATEGORIES.filter((c) => categoryCounts[c] > 0)].map((cat) => {
+          const isActive = activeCategory === cat;
+          const count = cat === "All" ? totalItems : categoryCounts[cat];
+          return (
+            <button
+              key={cat}
+              type="button"
+              className={`inv-chip${isActive ? " inv-chip--active" : ""}`}
+              onClick={() => onCategoryChange(cat)}
+              aria-pressed={isActive}
+            >
+              {cat}
+              <span className="inv-chip__count">{count}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Result count — only shown when filters or non-default sort are active */}
+      {showCount && (
+        <p className="inv-result-count" aria-live="polite" aria-atomic="true">
+          {hasFilters
+            ? `Showing ${visibleItems} of ${totalItems} item${totalItems !== 1 ? "s" : ""}`
+            : `${totalItems} item${totalItems !== 1 ? "s" : ""}`}
+          {hasFilters && (
+            <button
+              type="button"
+              className="inv-clear-link"
+              onClick={onClear}
+            >
+              Clear
+            </button>
+          )}
+        </p>
+      )}
+    </div>
+  );
+
+  function onClear() {
+    onQueryChange("");
+    onCategoryChange("All");
+  }
+}
+
 /* ── InventoryList ───────────────────────────────────────── */
 function InventoryList({ items, onEdit, onDelete, onAdd }) {
+  const [query, setQuery]               = useState("");
+  const [activeCategory, setCategory]   = useState("All");
+  const [sortBy, setSortBy]             = useState("newest");
+
+  // Category counts from full item set (unaffected by other filters)
+  const categoryCounts = useMemo(() => {
+    const counts = {};
+    for (const item of items) {
+      counts[item.category] = (counts[item.category] || 0) + 1;
+    }
+    return counts;
+  }, [items]);
+
+  // Derived: filtered + sorted view
+  const visibleItems = useMemo(() => {
+    const q = query.trim().toLowerCase();
+
+    let result = items.filter((item) => {
+      const matchesCategory =
+        activeCategory === "All" || item.category === activeCategory;
+
+      const matchesQuery =
+        !q ||
+        item.name.toLowerCase().includes(q) ||
+        item.category.toLowerCase().includes(q) ||
+        item.location.toLowerCase().includes(q) ||
+        item.notes.toLowerCase().includes(q);
+
+      return matchesCategory && matchesQuery;
+    });
+
+    result = [...result].sort((a, b) => {
+      switch (sortBy) {
+        case "name-asc":
+          return a.name.localeCompare(b.name);
+        case "name-desc":
+          return b.name.localeCompare(a.name);
+        case "value-desc": {
+          const av = (Number(a.estimatedValue) || 0) * (Number(a.quantity) || 1);
+          const bv = (Number(b.estimatedValue) || 0) * (Number(b.quantity) || 1);
+          return bv - av;
+        }
+        case "value-asc": {
+          const av = (Number(a.estimatedValue) || 0) * (Number(a.quantity) || 1);
+          const bv = (Number(b.estimatedValue) || 0) * (Number(b.quantity) || 1);
+          return av - bv;
+        }
+        case "newest":
+        default:
+          return (b.createdAt || 0) - (a.createdAt || 0);
+      }
+    });
+
+    return result;
+  }, [items, query, activeCategory, sortBy]);
+
+  function clearFilters() {
+    setQuery("");
+    setCategory("All");
+  }
+
+  // Empty inventory — no toolbar yet
   if (items.length === 0) {
     return (
       <section className="inventory-section" aria-label="Inventory">
-        <EmptyState onAdd={onAdd} />
+        <EmptyInventory onAdd={onAdd} />
       </section>
     );
   }
 
   return (
-    <section className="inventory-section" aria-label={`Inventory — ${items.length} item${items.length !== 1 ? "s" : ""}`}>
-      <div className="item-list">
-        {items.map((item) => (
-          <ItemCard
-            key={item.id}
-            item={item}
-            onEdit={onEdit}
-            onDelete={onDelete}
-          />
-        ))}
-      </div>
+    <section
+      className="inventory-section"
+      aria-label={`Inventory — ${items.length} item${items.length !== 1 ? "s" : ""}`}
+    >
+      <InventoryToolbar
+        query={query}
+        onQueryChange={setQuery}
+        activeCategory={activeCategory}
+        onCategoryChange={setCategory}
+        sortBy={sortBy}
+        onSortChange={setSortBy}
+        categoryCounts={categoryCounts}
+        totalItems={items.length}
+        visibleItems={visibleItems.length}
+        onExport={() => exportCSV(visibleItems)}
+      />
+
+      {visibleItems.length === 0 ? (
+        <NoResults onClear={clearFilters} />
+      ) : (
+        <div className="item-list">
+          {visibleItems.map((item) => (
+            <ItemCard
+              key={item.id}
+              item={item}
+              onEdit={onEdit}
+              onDelete={onDelete}
+            />
+          ))}
+        </div>
+      )}
     </section>
   );
 }

@@ -1119,3 +1119,262 @@ h3 { font-size: var(--text-lg); }
     break-inside: avoid;
   }
 }
+
+/* ==========================================================
+   17. INVENTORY TOOLBAR (Milestone 2A)
+   ========================================================== */
+
+.inv-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-5);
+}
+
+/* --- Top row: search + sort + export --- */
+.inv-toolbar__top {
+  display: flex;
+  gap: var(--sp-3);
+  align-items: center;
+}
+
+.inv-toolbar__right {
+  display: flex;
+  gap: var(--sp-2);
+  align-items: center;
+  flex-shrink: 0;
+}
+
+/* --- Search input --- */
+.inv-search {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
+.inv-search__icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+}
+
+.inv-search__input {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 36px 10px 38px;
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text);
+  font-size: var(--text-base);
+  transition:
+    border-color var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur-fast) var(--ease-out);
+  /* Remove browser-native search cancel button */
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.inv-search__input::-webkit-search-cancel-button { display: none; }
+
+.inv-search__input::placeholder { color: var(--color-text-muted); }
+
+.inv-search__input:hover { border-color: var(--color-border-strong); }
+
+.inv-search__input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(29, 79, 145, 0.12);
+}
+
+.inv-search__clear {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--color-border);
+  color: var(--color-text-soft);
+  border: none;
+  cursor: pointer;
+  transition:
+    background var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+}
+
+.inv-search__clear:hover {
+  background: var(--color-border-strong);
+  color: var(--color-text);
+}
+
+/* --- Sort select --- */
+.inv-sort {
+  min-height: 44px;
+  padding: 10px 36px 10px 12px;
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  box-shadow: var(--shadow-xs);
+  white-space: nowrap;
+  transition:
+    border-color var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur-fast) var(--ease-out);
+}
+
+.inv-sort:hover { border-color: var(--color-border-strong); }
+
+.inv-sort:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(29, 79, 145, 0.12);
+}
+
+/* Export label — hidden on very small screens */
+.inv-export-label {
+  display: inline;
+}
+
+@media (max-width: 400px) {
+  .inv-export-label { display: none; }
+}
+
+/* --- Category chips --- */
+.inv-chips {
+  display: flex;
+  gap: var(--sp-2);
+  overflow-x: auto;
+  padding-bottom: 4px;               /* space for scrollbar */
+  scrollbar-width: none;             /* Firefox */
+  -ms-overflow-style: none;
+}
+
+.inv-chips::-webkit-scrollbar { display: none; }
+
+.inv-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text-soft);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  white-space: nowrap;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition:
+    background var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur-fast) var(--ease-out);
+  min-height: 36px;
+}
+
+.inv-chip:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: var(--color-primary-subtle);
+}
+
+.inv-chip--active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #fff;
+  box-shadow: var(--shadow-sm);
+}
+
+.inv-chip--active:hover {
+  background: var(--color-primary-hover);
+  border-color: var(--color-primary-hover);
+  color: #fff;
+}
+
+.inv-chip__count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: var(--radius-pill);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-bold);
+  background: rgba(0, 0, 0, 0.08);
+  line-height: 1;
+}
+
+.inv-chip--active .inv-chip__count {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* --- Result count + clear link --- */
+.inv-result-count {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  font-weight: var(--weight-medium);
+}
+
+.inv-clear-link {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  color: var(--color-primary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px 0;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.inv-clear-link:hover { color: var(--color-primary-hover); }
+
+/* --- No-results empty state variant --- */
+.empty-state--no-results {
+  border-style: dashed;
+  padding: var(--sp-8) var(--sp-6);
+}
+
+/* --- Responsive collapse --- */
+@media (max-width: 520px) {
+  .inv-toolbar__top {
+    flex-wrap: wrap;
+  }
+
+  .inv-search {
+    width: 100%;
+    flex: unset;
+  }
+
+  .inv-toolbar__right {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .inv-sort {
+    flex: 1;
+  }
+}
