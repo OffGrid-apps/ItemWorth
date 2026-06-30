@@ -1121,6 +1121,7 @@ h3 { font-size: var(--text-lg); }
 }
 
 /* ==========================================================
+/* ==========================================================
    17. INVENTORY TOOLBAR (Milestone 2A)
    ========================================================== */
 
@@ -1131,7 +1132,7 @@ h3 { font-size: var(--text-lg); }
   margin-bottom: var(--sp-5);
 }
 
-/* --- Top row: search + sort + export --- */
+/* --- Top row: search + sort + action buttons --- */
 .inv-toolbar__top {
   display: flex;
   gap: var(--sp-3);
@@ -1175,15 +1176,12 @@ h3 { font-size: var(--text-lg); }
   transition:
     border-color var(--dur-fast) var(--ease-out),
     box-shadow var(--dur-fast) var(--ease-out);
-  /* Remove browser-native search cancel button */
   -webkit-appearance: none;
   appearance: none;
 }
 
 .inv-search__input::-webkit-search-cancel-button { display: none; }
-
 .inv-search__input::placeholder { color: var(--color-text-muted); }
-
 .inv-search__input:hover { border-color: var(--color-border-strong); }
 
 .inv-search__input:focus {
@@ -1248,22 +1246,22 @@ h3 { font-size: var(--text-lg); }
   box-shadow: 0 0 0 3px rgba(29, 79, 145, 0.12);
 }
 
-/* Export label — hidden on very small screens */
-.inv-export-label {
+/* --- Button text labels — hidden at very small widths --- */
+.inv-btn-label {
   display: inline;
 }
 
 @media (max-width: 400px) {
-  .inv-export-label { display: none; }
+  .inv-btn-label { display: none; }
 }
 
-/* --- Category chips --- */
+/* --- Category filter chips --- */
 .inv-chips {
   display: flex;
   gap: var(--sp-2);
   overflow-x: auto;
-  padding-bottom: 4px;               /* space for scrollbar */
-  scrollbar-width: none;             /* Firefox */
+  padding-bottom: 4px;
+  scrollbar-width: none;
   -ms-overflow-style: none;
 }
 
@@ -1328,7 +1326,7 @@ h3 { font-size: var(--text-lg); }
   background: rgba(255, 255, 255, 0.25);
 }
 
-/* --- Result count + clear link --- */
+/* --- Result count + inline clear link --- */
 .inv-result-count {
   display: flex;
   align-items: center;
@@ -1360,21 +1358,103 @@ h3 { font-size: var(--text-lg); }
 
 /* --- Responsive collapse --- */
 @media (max-width: 520px) {
-  .inv-toolbar__top {
-    flex-wrap: wrap;
-  }
+  .inv-toolbar__top { flex-wrap: wrap; }
+  .inv-search { width: 100%; flex: unset; }
+  .inv-toolbar__right { width: 100%; justify-content: space-between; }
+  .inv-sort { flex: 1; }
+}
 
-  .inv-search {
-    width: 100%;
-    flex: unset;
-  }
+/* ==========================================================
+   18. DATA PORTABILITY (Milestone 2B)
+   ========================================================== */
 
-  .inv-toolbar__right {
-    width: 100%;
-    justify-content: space-between;
-  }
+/* --- Import error banner --- */
+.import-error {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: 12px 16px;
+  margin-bottom: var(--sp-4);
+  background: var(--color-danger-subtle);
+  border: 1px solid rgba(185, 28, 28, 0.2);
+  border-radius: var(--radius-md);
+  color: var(--color-danger);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  animation: fadeUp var(--dur-normal) var(--ease-out) both;
+}
 
-  .inv-sort {
-    flex: 1;
-  }
+.import-error svg { flex-shrink: 0; }
+
+.import-error span { flex: 1; }
+
+.import-error__dismiss {
+  margin-left: auto;
+  font-size: 1.25rem;
+  line-height: 1;
+  color: var(--color-danger);
+  opacity: 0.6;
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  transition: opacity var(--dur-fast) var(--ease-out);
+  flex-shrink: 0;
+}
+
+.import-error__dismiss:hover { opacity: 1; }
+
+/* --- Info icon variant for the import dialog --- */
+.dialog__icon--info {
+  background: var(--color-primary-subtle);
+  color: var(--color-primary);
+}
+
+/* --- Import preview table inside the dialog --- */
+.import-preview {
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin-bottom: var(--sp-4);
+}
+
+.import-preview__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  font-size: var(--text-sm);
+  color: var(--color-text-soft);
+  border-bottom: 1px solid var(--color-divider);
+}
+
+.import-preview__row:last-child { border-bottom: none; }
+
+.import-preview__row strong {
+  font-weight: var(--weight-bold);
+  color: var(--color-text);
+}
+
+.import-preview__add  { color: var(--color-success); }
+.import-preview__skip { color: var(--color-text-muted); }
+
+.import-preview__note {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  line-height: var(--leading-loose);
+}
+
+/* --- Backup button: hidden on narrow mobile where space is critical --- */
+.inv-backup-btn { display: inline-flex; }
+
+@media (max-width: 600px) {
+  .inv-backup-btn { display: none; }
+}
+
+/* --- Disabled state for the primary button (e.g. "Nothing to add") --- */
+.btn-primary:disabled,
+.btn-primary[aria-disabled="true"] {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
