@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useRegisterSW } from "virtual:pwa-register/react";
 import {
   loadItems,
   saveItems,
@@ -61,6 +62,118 @@ function InfoIcon() {
       <line x1="12" y1="16" x2="12" y2="12" />
       <line x1="12" y1="8" x2="12.01" y2="8" />
     </svg>
+  );
+}
+
+function DownloadAppIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" strokeWidth="2" strokeLinecap="round"
+      strokeLinejoin="round" aria-hidden="true">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+      <polyline points="7 10 12 15 17 10" />
+      <line x1="12" y1="15" x2="12" y2="3" />
+    </svg>
+  );
+}
+
+function WifiOffIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" strokeWidth="2" strokeLinecap="round"
+      strokeLinejoin="round" aria-hidden="true">
+      <line x1="1" y1="1" x2="23" y2="23" />
+      <path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55" />
+      <path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39" />
+      <path d="M10.71 5.05A16 16 0 0 1 22.56 9" />
+      <path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88" />
+      <path d="M8.53 16.11a6 6 0 0 1 6.95 0" />
+      <line x1="12" y1="20" x2="12.01" y2="20" />
+    </svg>
+  );
+}
+
+function RefreshIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" strokeWidth="2" strokeLinecap="round"
+      strokeLinejoin="round" aria-hidden="true">
+      <polyline points="23 4 23 10 17 10" />
+      <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
+    </svg>
+  );
+}
+
+/* ── Install Prompt Banner ───────────────────────────────── */
+const INSTALL_DISMISSED_KEY = "itemworth.install.dismissed";
+
+function InstallBanner({ onInstall, onDismiss }) {
+  return (
+    <div className="pwa-banner" role="complementary" aria-label="Install app">
+      <div className="pwa-banner__icon" aria-hidden="true">
+        <DownloadAppIcon />
+      </div>
+      <div className="pwa-banner__body">
+        <p className="pwa-banner__title">Add to Home Screen</p>
+        <p className="pwa-banner__desc">
+          Install ItemWorth for fast, offline access.
+        </p>
+      </div>
+      <div className="pwa-banner__actions">
+        <button
+          type="button"
+          className="btn btn-primary pwa-banner__install"
+          onClick={onInstall}
+        >
+          Install
+        </button>
+        <button
+          type="button"
+          className="btn btn-secondary pwa-banner__dismiss"
+          onClick={onDismiss}
+          aria-label="Dismiss install prompt"
+        >
+          ×
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/* ── Offline Indicator ───────────────────────────────────── */
+function OfflineIndicator() {
+  return (
+    <div className="offline-indicator" role="status" aria-live="polite">
+      <WifiOffIcon />
+      Offline — your data is safe
+    </div>
+  );
+}
+
+/* ── Update Banner ───────────────────────────────────────── */
+function UpdateBanner({ onUpdate, onDismiss }) {
+  return (
+    <div className="pwa-update-banner" role="status" aria-live="polite">
+      <RefreshIcon />
+      <span className="pwa-update-banner__msg">
+        An update is available.
+      </span>
+      <button
+        type="button"
+        className="btn btn-primary pwa-update-banner__btn"
+        onClick={onUpdate}
+      >
+        Update now
+      </button>
+      <button
+        type="button"
+        className="btn btn-secondary pwa-update-banner__dismiss"
+        onClick={onDismiss}
+        aria-label="Dismiss update notification"
+      >
+        ×
+      </button>
+    </div>
   );
 }
 
@@ -239,6 +352,87 @@ function App() {
   const [loaded, setLoaded]               = useState(false);
   const { toasts, show: showToast }       = useToast();
 
+  // ── PWA: install prompt ──────────────────────────────────
+  // deferredPrompt holds the BeforeInstallPromptEvent when available.
+  // null means the browser doesn't support it or the app is already installed.
+  const [deferredPrompt, setDeferredPrompt]     = useState(null);
+  const [installDismissed, setInstallDismissed] = useState(
+    () => localStorage.getItem(INSTALL_DISMISSED_KEY) === "true"
+  );
+
+  useEffect(() => {
+    const handler = (e) => {
+      // Prevent the browser's default mini-infobar
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+    window.addEventListener("beforeinstallprompt", handler);
+    return () => window.removeEventListener("beforeinstallprompt", handler);
+  }, []);
+
+  // Clear the prompt once the app has been installed
+  useEffect(() => {
+    const handler = () => setDeferredPrompt(null);
+    window.addEventListener("appinstalled", handler);
+    return () => window.removeEventListener("appinstalled", handler);
+  }, []);
+
+  function handleInstall() {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(() => {
+      setDeferredPrompt(null);
+    });
+  }
+
+  function handleInstallDismiss() {
+    setInstallDismissed(true);
+    localStorage.setItem(INSTALL_DISMISSED_KEY, "true");
+  }
+
+  const showInstallBanner =
+    deferredPrompt !== null && !installDismissed;
+
+  // ── PWA: offline indicator ───────────────────────────────
+  const [isOffline, setIsOffline] = useState(() => !navigator.onLine);
+
+  useEffect(() => {
+    const goOnline  = () => setIsOffline(false);
+    const goOffline = () => setIsOffline(true);
+    window.addEventListener("online",  goOnline);
+    window.addEventListener("offline", goOffline);
+    return () => {
+      window.removeEventListener("online",  goOnline);
+      window.removeEventListener("offline", goOffline);
+    };
+  }, []);
+
+  // ── PWA: update notification ─────────────────────────────
+  const [updateDismissed, setUpdateDismissed] = useState(false);
+
+  const {
+    needRefresh: [needRefresh, setNeedRefresh],
+    updateServiceWorker,
+  } = useRegisterSW({
+    onRegistered(r) {
+      // Periodically check for updates when the SW is registered
+      if (r) {
+        setInterval(() => r.update(), 60 * 60 * 1000); // hourly
+      }
+    },
+  });
+
+  const showUpdateBanner = needRefresh && !updateDismissed;
+
+  function handleUpdate() {
+    updateServiceWorker(true);
+  }
+
+  function handleUpdateDismiss() {
+    setNeedRefresh(false);
+    setUpdateDismissed(true);
+  }
+
   useEffect(() => {
     setItems(loadItems());
     setLoaded(true);
@@ -363,6 +557,14 @@ function App() {
 
   return (
     <>
+      {/* ── Install banner (outside .app so it spans full width) ── */}
+      {showInstallBanner && (
+        <InstallBanner
+          onInstall={handleInstall}
+          onDismiss={handleInstallDismiss}
+        />
+      )}
+
       <main className="app">
         {/* ── Header ── */}
         <header className="app-header">
@@ -386,7 +588,18 @@ function App() {
               </a>
             </nav>
           </div>
+
+          {/* Offline indicator — visible only when offline */}
+          {isOffline && <OfflineIndicator />}
         </header>
+
+        {/* ── Update banner ── */}
+        {showUpdateBanner && (
+          <UpdateBanner
+            onUpdate={handleUpdate}
+            onDismiss={handleUpdateDismiss}
+          />
+        )}
 
         {/* ── Dashboard ── */}
         <Dashboard itemCount={items.length} totalValue={totalValue} />
