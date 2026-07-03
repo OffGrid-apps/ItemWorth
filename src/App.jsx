@@ -107,6 +107,9 @@ function RefreshIcon() {
 /* ── Install Prompt Banner ───────────────────────────────── */
 const INSTALL_DISMISSED_KEY = "itemworth.install.dismissed";
 
+/* ── Welcome / Onboarding ────────────────────────────────── */
+const WELCOME_DISMISSED_KEY = "itemworth.welcome.dismissed";
+
 function InstallBanner({ onInstall, onDismiss }) {
   return (
     <div className="pwa-banner" role="complementary" aria-label="Install app">
@@ -170,6 +173,115 @@ function UpdateBanner({ onUpdate, onDismiss }) {
         className="btn btn-secondary pwa-update-banner__dismiss"
         onClick={onDismiss}
         aria-label="Dismiss update notification"
+      >
+        ×
+      </button>
+    </div>
+  );
+}
+
+const SAMPLE_ITEMS = [
+  {
+    id: "sample-1",
+    name: "MacBook Pro 14\"",
+    category: "Electronics",
+    location: "Home office",
+    quantity: 1,
+    estimatedValue: "1999",
+    notes: "M3 Pro, Space Black, purchased 2024",
+    createdAt: Date.now() - 5 * 24 * 60 * 60 * 1000,
+  },
+  {
+    id: "sample-2",
+    name: "Standing Desk",
+    category: "Furniture",
+    location: "Home office",
+    quantity: 1,
+    estimatedValue: "650",
+    notes: "Height-adjustable, walnut top",
+    createdAt: Date.now() - 4 * 24 * 60 * 60 * 1000,
+  },
+  {
+    id: "sample-3",
+    name: "Cordless Drill",
+    category: "Tools",
+    location: "Garage",
+    quantity: 1,
+    estimatedValue: "129",
+    notes: "18V, includes two batteries",
+    createdAt: Date.now() - 3 * 24 * 60 * 60 * 1000,
+  },
+  {
+    id: "sample-4",
+    name: "Winter Jacket",
+    category: "Clothing",
+    location: "Bedroom closet",
+    quantity: 1,
+    estimatedValue: "280",
+    notes: "Down-filled, size M",
+    createdAt: Date.now() - 2 * 24 * 60 * 60 * 1000,
+  },
+  {
+    id: "sample-5",
+    name: "Road Bicycle",
+    category: "Sports",
+    location: "Garage",
+    quantity: 1,
+    estimatedValue: "900",
+    notes: "Aluminium frame, 21-speed",
+    createdAt: Date.now() - 1 * 24 * 60 * 60 * 1000,
+  },
+];
+
+function WelcomePanel({ onStart, onLoadSamples, onDismiss }) {
+  return (
+    <div className="welcome-panel" role="region" aria-label="Welcome to ItemWorth">
+      <div className="welcome-panel__header">
+        <div className="welcome-panel__eyebrow">Getting started</div>
+        <h2 className="welcome-panel__title">Track what you own</h2>
+        <p className="welcome-panel__body">
+          ItemWorth helps you record, value, and organise your belongings.
+          Everything stays on your device — no account, no cloud, no tracking.
+        </p>
+      </div>
+
+      <div className="welcome-panel__features">
+        <div className="welcome-panel__feature">
+          <span className="welcome-panel__feature-icon" aria-hidden="true">📦</span>
+          <span>Add items with category, location, and estimated value</span>
+        </div>
+        <div className="welcome-panel__feature">
+          <span className="welcome-panel__feature-icon" aria-hidden="true">🔍</span>
+          <span>Search, filter, and sort your entire inventory instantly</span>
+        </div>
+        <div className="welcome-panel__feature">
+          <span className="welcome-panel__feature-icon" aria-hidden="true">💾</span>
+          <span>Export to CSV or back up and restore with JSON</span>
+        </div>
+      </div>
+
+      <div className="welcome-panel__actions">
+        <button
+          type="button"
+          className="btn btn-primary"
+          onClick={onStart}
+        >
+          Add your first item
+        </button>
+        <button
+          type="button"
+          className="btn btn-secondary"
+          onClick={onLoadSamples}
+        >
+          Explore with sample data
+        </button>
+      </div>
+
+      <button
+        type="button"
+        className="welcome-panel__dismiss"
+        onClick={onDismiss}
+        aria-label="Dismiss welcome"
       >
         ×
       </button>
@@ -351,6 +463,31 @@ function App() {
   const [importError, setImportError]     = useState("");
   const [loaded, setLoaded]               = useState(false);
   const { toasts, show: showToast }       = useToast();
+
+  // ── Onboarding ───────────────────────────────────────────
+  // Welcome panel is shown once to new users when the inventory is empty.
+  // The `loaded` guard prevents a flash for existing users while localStorage
+  // is being read on startup.
+  const [welcomeDismissed, setWelcomeDismissed] = useState(
+    () => localStorage.getItem(WELCOME_DISMISSED_KEY) === "true"
+  );
+
+  function dismissWelcome() {
+    setWelcomeDismissed(true);
+    localStorage.setItem(WELCOME_DISMISSED_KEY, "true");
+  }
+
+  function handleWelcomeStart() {
+    dismissWelcome();
+    addItem();
+  }
+
+  function handleLoadSamples() {
+    dismissWelcome();
+    setItems(SAMPLE_ITEMS);
+  }
+
+  const showWelcome = loaded && items.length === 0 && !welcomeDismissed;
 
   // ── PWA: install prompt ──────────────────────────────────
   // deferredPrompt holds the BeforeInstallPromptEvent when available.
@@ -603,6 +740,15 @@ function App() {
 
         {/* ── Dashboard ── */}
         <Dashboard itemCount={items.length} totalValue={totalValue} />
+
+        {/* ── Welcome panel (first-run only) ── */}
+        {showWelcome && (
+          <WelcomePanel
+            onStart={handleWelcomeStart}
+            onLoadSamples={handleLoadSamples}
+            onDismiss={dismissWelcome}
+          />
+        )}
 
         {/* ── Section toolbar ── */}
         <div className="section-toolbar">
