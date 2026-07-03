@@ -1,0 +1,301 @@
+# ItemWorth Roadmap
+
+> **Product roadmap for ItemWorth — an offline-first, privacy-focused personal inventory application.**
+
+This roadmap outlines the planned evolution of ItemWorth. It reflects the current state of development and the intended direction of the project. Milestones are implemented incrementally to preserve stability, maintain backward compatibility, and ensure a high-quality user experience.
+
+---
+
+# Project Status
+
+**Application:** ItemWorth
+
+**Current Version:** v0.6.0
+
+**Development Status:** Active Development
+
+**Current Milestone:** 3C — Organization Enhancements
+
+---
+
+# Vision
+
+ItemWorth is designed to be a dependable, offline-first inventory management application that helps people organize, document, and estimate the value of their belongings without sacrificing privacy.
+
+The application is intended for:
+
+- Home inventory management
+- Insurance documentation
+- Moving preparation
+- Estate planning
+- Asset organization
+- Personal record keeping
+
+ItemWorth is built around a simple philosophy:
+
+- Your data belongs to you.
+- Your inventory should remain available without an Internet connection.
+- Core functionality should never depend on online services.
+
+---
+
+# Guiding Principles
+
+Every release should reinforce the following principles:
+
+- Offline-first
+- Privacy-first
+- Mobile-first
+- Accessibility-first
+- Color-blind-friendly design
+- Responsive interface
+- Lightweight architecture
+- Minimal dependencies
+- Long-term maintainability
+- Backward compatibility
+
+Stability is always prioritized over feature quantity.
+
+---
+
+# Completed Milestones
+
+## ✅ Milestone 1 — Foundation
+
+**Status:** Complete
+
+Established the core application architecture.
+
+Highlights:
+
+- React + Vite foundation
+- Responsive mobile-first interface
+- Inventory CRUD operations
+- Dashboard
+- Local storage persistence
+- Design system
+- Offline-first architecture
+
+---
+
+## ✅ Milestone 2A — Inventory Management
+
+**Status:** Complete
+
+Expanded inventory management capabilities.
+
+Features:
+
+- Search
+- Category filtering
+- Sorting
+- Dashboard improvements
+- CSV export
+
+---
+
+## ✅ Milestone 2B — Backup & Restore
+
+**Status:** Complete
+
+Added data protection and recovery features.
+
+Features:
+
+- JSON backup
+- JSON restore
+- Import preview
+- Duplicate detection
+- Import validation
+- Backward-compatible data import
+
+---
+
+## ✅ Milestone 2C — Progressive Web App
+
+**Status:** Complete
+
+Added Progressive Web App support.
+
+Features:
+
+- Installable PWA
+- Offline support
+- Service Worker integration
+- Update notifications
+- Offline status indicator
+- Web App Manifest
+
+---
+
+## ✅ Milestone 3A — First-Run Experience
+
+**Status:** Complete
+
+Improved the onboarding experience.
+
+Features:
+
+- Welcome panel
+- Sample inventory
+- Enhanced empty state
+- First-run guidance
+
+---
+
+## ✅ Milestone 3B — Rich Item Information
+
+**Status:** Complete
+
+Expanded the information that can be stored for each inventory item.
+
+Features:
+
+- Serial numbers
+- Purchase dates
+- Condition tracking
+- Photo attachments
+- Client-side image compression
+- Expandable item details
+- Search by serial number
+- Backward-compatible storage updates
+
+---
+
+# Current Development
+
+## 🚧 Milestone 3C — Organization Enhancements
+
+**Status:** In Progress
+
+Focused on improving organization, navigation, and data entry.
+
+Planned capabilities include:
+
+### Location Organization
+
+- Group inventory by location
+- Toggle between grouped and flat views
+- Per-location item counts
+- Per-location value subtotals
+
+### Tags
+
+- Custom tags
+- Multiple tags per item
+- Search by tag
+- Filter by tag
+- Tag chips displayed on inventory cards
+
+### Improved Data Entry
+
+- Saved location autocomplete
+- Faster location selection
+- Improved inventory organization workflow
+
+### CSV Enhancements
+
+Expanded export support for:
+
+- Serial Number
+- Purchase Date
+- Condition
+- Tags
+
+---
+
+# Planned Milestones
+
+## Milestone 4A — Accessibility Review
+
+Planned objectives:
+
+- Accessibility audit
+- Keyboard navigation improvements
+- Screen reader review
+- Focus management improvements
+- Color contrast verification
+- WCAG-focused usability improvements
+
+---
+
+## Milestone 4B — Performance & Reliability
+
+Planned objectives:
+
+- Storage optimization
+- localStorage quota handling
+- Improved error handling
+- Performance profiling
+- Bundle optimization
+- Additional Progressive Web App hardening
+
+---
+
+## Milestone 4C — Version 1.0 Release
+
+Planned objectives:
+
+- Final interface polish
+- Bug fixes
+- Comprehensive regression testing
+- Documentation review
+- Production readiness assessment
+- Version 1.0 release
+
+---
+
+# Future Considerations
+
+The following ideas may be evaluated after Version 1.0. They are exploratory and are **not currently scheduled**.
+
+Potential areas of exploration include:
+
+- Barcode scanning
+- Receipt management
+- Additional reporting tools
+- Advanced inventory analytics
+- Additional export formats
+- Optional cloud synchronization
+- Cross-device synchronization
+
+Future priorities will be determined based on project goals and user feedback.
+
+---
+
+# Release Philosophy
+
+ItemWorth is developed through small, carefully scoped milestones.
+
+Every release is expected to:
+
+- Preserve existing user data
+- Maintain backward compatibility
+- Build successfully in production
+- Preserve offline functionality
+- Maintain accessibility standards
+- Improve usability without unnecessary complexity
+
+Incremental improvements are preferred over large-scale rewrites.
+
+---
+
+# Version History
+
+| Version | Status | Description |
+|----------|--------|-------------|
+| v0.1.0 | Released | Initial Foundation |
+| v0.2.0 | Released | Inventory Management Enhancements |
+| v0.3.0 | Released | Backup & Restore |
+| v0.4.0 | Released | Progressive Web App |
+| v0.5.0 | Released | First-Run Experience |
+| v0.6.0 | Released | Rich Item Information |
+| Next | In Development | Organization Enhancements |
+
+---
+
+# Long-Term Goal
+
+The long-term goal of ItemWorth is to provide a dependable, privacy-respecting inventory management solution that remains lightweight, maintainable, and fully functional without requiring accounts, subscriptions, servers, or cloud infrastructure.
+
+Every milestone should strengthen the application's reliability, usability, accessibility, and offline capabilities while preserving the simplicity that defines the project.
