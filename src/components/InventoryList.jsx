@@ -106,6 +106,17 @@ function UploadIcon() {
   );
 }
 
+function ChevronIcon({ expanded }) {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"
+      strokeLinejoin="round" aria-hidden="true"
+      style={{ transform: expanded ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 200ms ease" }}>
+      <polyline points="6 9 12 15 18 9" />
+    </svg>
+  );
+}
+
 /* ── Helpers ─────────────────────────────────────────────── */
 function getBadgeClass(category) {
   return `badge badge-${category.toLowerCase().replace(/\s+/g, "-")}`;
@@ -115,6 +126,24 @@ function formatCurrency(amount) {
   return Number(amount || 0).toLocaleString(undefined, {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
+  });
+}
+
+// Condition badge: uses background+text pairs (never color alone)
+const CONDITION_STYLES = {
+  Excellent: { background: "#dcfce7", color: "#166534" },
+  Good:      { background: "#dbeafe", color: "#1e40af" },
+  Fair:      { background: "#fef3c7", color: "#92400e" },
+  Poor:      { background: "#fee2e2", color: "#991b1b" },
+};
+
+function formatDate(iso) {
+  if (!iso) return "";
+  // YYYY-MM-DD → localised display date (avoids timezone shift from new Date(iso))
+  const [y, m, d] = iso.split("-");
+  if (!y || !m || !d) return iso;
+  return new Date(Number(y), Number(m) - 1, Number(d)).toLocaleDateString(undefined, {
+    year: "numeric", month: "short", day: "numeric",
   });
 }
 
@@ -172,10 +201,15 @@ function exportCSV(items) {
 
 /* ── Item Card ───────────────────────────────────────────── */
 function ItemCard({ item, onEdit, onDelete }) {
+  const [expanded, setExpanded] = useState(false);
+
   const unitValue  = Number(item.estimatedValue) || 0;
   const qty        = Number(item.quantity) || 1;
   const totalValue = unitValue * qty;
   const showCalc   = qty > 1 && unitValue > 0;
+  const detailId   = `detail-${item.id}`;
+
+  const hasDetail = item.photo || item.serialNumber || item.purchaseDate || item.condition;
 
   return (
     <article
@@ -184,7 +218,20 @@ function ItemCard({ item, onEdit, onDelete }) {
     >
       <div className="item-card__body">
         <div className="item-card__top">
-          <h3 className="item-card__name">{item.name}</h3>
+          {hasDetail ? (
+            <button
+              type="button"
+              className="item-card__name item-card__name--expandable"
+              onClick={() => setExpanded((v) => !v)}
+              aria-expanded={expanded}
+              aria-controls={detailId}
+            >
+              {item.name}
+              <ChevronIcon expanded={expanded} />
+            </button>
+          ) : (
+            <h3 className="item-card__name">{item.name}</h3>
+          )}
           <span className={getBadgeClass(item.category)}>
             {item.category}
           </span>
@@ -219,6 +266,52 @@ function ItemCard({ item, onEdit, onDelete }) {
 
         {item.notes && (
           <p className="item-card__notes">{item.notes}</p>
+        )}
+
+        {/* ── Inline detail panel ── */}
+        {hasDetail && (
+          <div
+            id={detailId}
+            className={`item-detail${expanded ? " item-detail--open" : ""}`}
+            aria-hidden={!expanded}
+          >
+            <div className="item-detail__inner">
+              {item.photo && (
+                <img
+                  src={item.photo}
+                  alt={`Photo of ${item.name}`}
+                  className="item-detail__photo"
+                />
+              )}
+              <dl className="item-detail__fields">
+                {item.condition && (
+                  <>
+                    <dt>Condition</dt>
+                    <dd>
+                      <span
+                        className="item-detail__condition"
+                        style={CONDITION_STYLES[item.condition] ?? {}}
+                      >
+                        {item.condition}
+                      </span>
+                    </dd>
+                  </>
+                )}
+                {item.serialNumber && (
+                  <>
+                    <dt>Serial number</dt>
+                    <dd>{item.serialNumber}</dd>
+                  </>
+                )}
+                {item.purchaseDate && (
+                  <>
+                    <dt>Purchase date</dt>
+                    <dd>{formatDate(item.purchaseDate)}</dd>
+                  </>
+                )}
+              </dl>
+            </div>
+          </div>
         )}
       </div>
 
@@ -497,7 +590,8 @@ function InventoryList({ items, onEdit, onDelete, onAdd, onImportFile }) {
         item.name.toLowerCase().includes(q) ||
         item.category.toLowerCase().includes(q) ||
         item.location.toLowerCase().includes(q) ||
-        item.notes.toLowerCase().includes(q);
+        item.notes.toLowerCase().includes(q) ||
+        (item.serialNumber ?? "").toLowerCase().includes(q);
 
       return matchesCategory && matchesQuery;
     });

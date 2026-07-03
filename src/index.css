@@ -1747,3 +1747,158 @@ h3 { font-size: var(--text-lg); }
   background: var(--color-surface-alt);
   color: var(--color-text);
 }
+
+/* ==========================================================
+   21. RICH ITEM DATA & DETAIL PANEL (Milestone 3B)
+   ========================================================== */
+
+/* --- Item name as expand trigger --- */
+.item-card__name--expandable {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-size: var(--text-md);
+  font-weight: var(--weight-bold);
+  color: var(--color-text);
+  letter-spacing: -0.015em;
+  line-height: var(--leading-tight);
+  text-align: left;
+}
+
+.item-card__name--expandable:hover {
+  color: var(--color-primary);
+}
+
+/* --- Inline detail panel --- */
+.item-detail {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition:
+    max-height var(--dur-slow) var(--ease-out),
+    opacity var(--dur-normal) var(--ease-out);
+}
+
+.item-detail--open {
+  max-height: 600px;
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .item-detail {
+    transition: none;
+  }
+}
+
+.item-detail__inner {
+  padding-top: var(--sp-4);
+  border-top: 1px solid var(--color-divider);
+  margin-top: var(--sp-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+/* Photo in detail panel */
+.item-detail__photo {
+  width: 100%;
+  max-height: 240px;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+}
+
+/* Detail fields as definition list */
+.item-detail__fields {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--sp-2) var(--sp-4);
+  align-items: baseline;
+}
+
+.item-detail__fields dt {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+.item-detail__fields dd {
+  font-size: var(--text-sm);
+  color: var(--color-text-soft);
+  word-break: break-all;
+}
+
+/* Condition badge — text + background (never color alone) */
+.item-detail__condition {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+}
+
+/* --- Photo upload area in ItemForm --- */
+.photo-upload {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  padding: var(--sp-5);
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-alt);
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  cursor: pointer;
+  transition:
+    border-color var(--dur-fast) var(--ease-out),
+    background var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+  min-height: 88px;
+}
+
+.photo-upload:hover {
+  border-color: var(--color-primary);
+  background: var(--color-primary-subtle);
+  color: var(--color-primary);
+}
+
+.photo-upload--loading {
+  opacity: 0.6;
+  cursor: wait;
+  pointer-events: none;
+}
+
+/* Photo preview in ItemForm */
+.photo-preview {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.photo-preview__img {
+  width: 100%;
+  max-height: 200px;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+}
+
+.photo-preview__actions {
+  display: flex;
+  gap: var(--sp-3);
+}
+
+/* "Change photo" label acts as a button */
+.photo-preview__change {
+  cursor: pointer;
+}

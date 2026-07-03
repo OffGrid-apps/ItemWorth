@@ -1,15 +1,40 @@
 import { useState } from "react";
-import { CATEGORIES } from "../utils/storage";
+import { CATEGORIES, compressImage } from "../utils/storage";
 
 function ItemForm({ item, onSave, onCancel }) {
   const [form, setForm] = useState(item);
   const [nameError, setNameError] = useState("");
+  const [photoError, setPhotoError] = useState("");
+  const [photoLoading, setPhotoLoading] = useState(false);
 
   const isEditing = Boolean(item.name);
 
   function updateField(field, value) {
     setForm((current) => ({ ...current, [field]: value }));
     if (field === "name" && nameError) setNameError("");
+  }
+
+  function handlePhotoChange(e) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setPhotoError("");
+    setPhotoLoading(true);
+    compressImage(file)
+      .then((dataUrl) => {
+        setForm((current) => ({ ...current, photo: dataUrl }));
+        setPhotoLoading(false);
+      })
+      .catch((err) => {
+        setPhotoError(err.message);
+        setPhotoLoading(false);
+      });
+    // Reset input so the same file can be reselected after an error
+    e.target.value = "";
+  }
+
+  function removePhoto() {
+    setForm((current) => ({ ...current, photo: "" }));
+    setPhotoError("");
   }
 
   function handleSubmit(e) {
@@ -144,6 +169,113 @@ function ItemForm({ item, onSave, onCancel }) {
               onChange={(e) => updateField("notes", e.target.value)}
               placeholder="Condition, serial number, purchase date, etc."
             />
+          </div>
+
+          {/* Serial Number + Purchase Date */}
+          <div className="form-row">
+            <div className="field">
+              <label className="field-label" htmlFor="field-serial">
+                Serial number
+              </label>
+              <input
+                id="field-serial"
+                type="text"
+                value={form.serialNumber ?? ""}
+                onChange={(e) => updateField("serialNumber", e.target.value)}
+                placeholder="e.g. SN-123456"
+                autoComplete="off"
+              />
+            </div>
+
+            <div className="field">
+              <label className="field-label" htmlFor="field-purchase-date">
+                Purchase date
+              </label>
+              <input
+                id="field-purchase-date"
+                type="date"
+                value={form.purchaseDate ?? ""}
+                onChange={(e) => updateField("purchaseDate", e.target.value)}
+              />
+            </div>
+          </div>
+
+          {/* Condition */}
+          <div className="field">
+            <label className="field-label" htmlFor="field-condition">
+              Condition
+            </label>
+            <select
+              id="field-condition"
+              value={form.condition ?? ""}
+              onChange={(e) => updateField("condition", e.target.value)}
+            >
+              <option value="">Not specified</option>
+              <option value="Excellent">Excellent</option>
+              <option value="Good">Good</option>
+              <option value="Fair">Fair</option>
+              <option value="Poor">Poor</option>
+            </select>
+          </div>
+
+          {/* Photo */}
+          <div className="field">
+            <span className="field-label">Photo</span>
+            {form.photo ? (
+              <div className="photo-preview">
+                <img
+                  src={form.photo}
+                  alt={`Photo of ${form.name || "item"}`}
+                  className="photo-preview__img"
+                />
+                <div className="photo-preview__actions">
+                  <label className="btn btn-secondary photo-preview__change">
+                    Change photo
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="sr-only"
+                      onChange={handlePhotoChange}
+                      disabled={photoLoading}
+                    />
+                  </label>
+                  <button
+                    type="button"
+                    className="btn btn-danger"
+                    onClick={removePhoto}
+                    disabled={photoLoading}
+                  >
+                    Remove
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <label className={`photo-upload${photoLoading ? " photo-upload--loading" : ""}`}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" strokeWidth="1.75" strokeLinecap="round"
+                  strokeLinejoin="round" aria-hidden="true">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                  <circle cx="8.5" cy="8.5" r="1.5" />
+                  <polyline points="21 15 16 10 5 21" />
+                </svg>
+                <span>{photoLoading ? "Processing…" : "Add photo"}</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="sr-only"
+                  onChange={handlePhotoChange}
+                  disabled={photoLoading}
+                />
+              </label>
+            )}
+            {photoError && (
+              <p className="field-error" role="alert">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2zm0 14a1 1 0 1 1 0-2 1 1 0 0 1 0 2zm0-4a1 1 0 0 1-1-1V8a1 1 0 0 1 2 0v3a1 1 0 0 1-1 1z"/>
+                </svg>
+                {photoError}
+              </p>
+            )}
           </div>
         </div>
 

@@ -40,6 +40,10 @@ export function createItem() {
     estimatedValue: "",
     notes: "",
     createdAt: Date.now(),
+    serialNumber: "",
+    purchaseDate: "",
+    condition: "",
+    photo: "",
   };
 }
 
@@ -126,6 +130,11 @@ export function validateImport(parsed) {
         notes: typeof item.notes === "string" ? item.notes : "",
         createdAt:
           typeof item.createdAt === "number" ? item.createdAt : Date.now(),
+        // 3B fields — default to "" so pre-3B backups import cleanly
+        serialNumber: typeof item.serialNumber === "string" ? item.serialNumber : "",
+        purchaseDate: typeof item.purchaseDate === "string" ? item.purchaseDate : "",
+        condition:    typeof item.condition === "string" ? item.condition : "",
+        photo:        typeof item.photo === "string" ? item.photo : "",
       });
     }
   }
@@ -151,4 +160,89 @@ export function mergeImport(existingItems, incomingItems) {
     addedCount: newItems.length,
     skippedCount: incomingItems.length - newItems.length,
   };
+}
+
+/* ── Photo compression ───────────────────────────────────── */
+
+// Target: ≤ 200 KB as a base64 data URL (~150 000 chars).
+// Strategy: draw onto a Canvas at max 800 × 800 px, export as JPEG.
+// If Canvas is unavailable, reject files over the size limit.
+const PHOTO_MAX_CHARS = 150_000;
+const PHOTO_MAX_DIM   = 800;
+const PHOTO_QUALITY   = 0.75;
+
+/**
+ * Compresses an image File to a base64 JPEG data URL small enough for
+ * localStorage. Resolves with the data URL string, or rejects with an
+ * Error describing why the file could not be used.
+ */
+export function compressImage(file) {
+  return new Promise((resolve, reject) => {
+    if (!file.type.startsWith("image/")) {
+      reject(new Error("Please select an image file (JPEG, PNG, WebP, etc.)."));
+      return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onerror = () => reject(new Error("The image could not be read."));
+
+    reader.onload = (e) => {
+      const dataUrl = e.target.result;
+
+      // Canvas path — preferred
+      if (typeof document !== "undefined") {
+        const img = new Image();
+
+        img.onerror = () => reject(new Error("The image could not be decoded."));
+
+        img.onload = () => {
+          // Scale down to fit within PHOTO_MAX_DIM × PHOTO_MAX_DIM
+          let { width, height } = img;
+          if (width > PHOTO_MAX_DIM || height > PHOTO_MAX_DIM) {
+            const scale = Math.min(PHOTO_MAX_DIM / width, PHOTO_MAX_DIM / height);
+            width  = Math.round(width  * scale);
+            height = Math.round(height * scale);
+          }
+
+          const canvas = document.createElement("canvas");
+          canvas.width  = width;
+          canvas.height = height;
+
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, width, height);
+
+          // Try at target quality; lower if still too large
+          let result = canvas.toDataURL("image/jpeg", PHOTO_QUALITY);
+          if (result.length > PHOTO_MAX_CHARS) {
+            result = canvas.toDataURL("image/jpeg", 0.5);
+          }
+          if (result.length > PHOTO_MAX_CHARS) {
+            result = canvas.toDataURL("image/jpeg", 0.3);
+          }
+
+          if (result.length > PHOTO_MAX_CHARS) {
+            reject(new Error(
+              "The image is too large to store even after compression. " +
+              "Please use a smaller image (under 1 MB recommended)."
+            ));
+            return;
+          }
+
+          resolve(result);
+        };
+
+        img.src = dataUrl;
+      } else {
+        // Canvas unavailable — accept only if already within limit
+        if (dataUrl.length > PHOTO_MAX_CHARS) {
+          reject(new Error("The image is too large. Please use a smaller image."));
+          return;
+        }
+        resolve(dataUrl);
+      }
+    };
+
+    reader.readAsDataURL(file);
+  });
 }
