@@ -581,6 +581,20 @@ function App() {
 
   const totalValue = useMemo(() => calculateTotalValue(items), [items]);
 
+  // Unique sorted location strings for the datalist in ItemForm
+  const locationSuggestions = useMemo(() => {
+    const seen = new Set();
+    const result = [];
+    for (const item of items) {
+      const loc = item.location?.trim();
+      if (loc && !seen.has(loc)) {
+        seen.add(loc);
+        result.push(loc);
+      }
+    }
+    return result.sort();
+  }, [items]);
+
   /* ── CRUD ── */
   function addItem() {
     setEditingItem(createItem());
@@ -774,6 +788,7 @@ function App() {
             item={editingItem}
             onSave={saveItem}
             onCancel={cancelEdit}
+            locationSuggestions={locationSuggestions}
           />
         )}
 

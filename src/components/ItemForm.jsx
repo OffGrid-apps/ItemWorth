@@ -1,11 +1,15 @@
 import { useState } from "react";
 import { CATEGORIES, compressImage } from "../utils/storage";
 
-function ItemForm({ item, onSave, onCancel }) {
+function ItemForm({ item, onSave, onCancel, locationSuggestions = [] }) {
   const [form, setForm] = useState(item);
   const [nameError, setNameError] = useState("");
   const [photoError, setPhotoError] = useState("");
   const [photoLoading, setPhotoLoading] = useState(false);
+  // tagInput holds the raw comma-separated string while the user types
+  const [tagInput, setTagInput] = useState(
+    () => (item.tags ?? []).join(", ")
+  );
 
   const isEditing = Boolean(item.name);
 
@@ -45,7 +49,15 @@ function ItemForm({ item, onSave, onCancel }) {
       return;
     }
 
-    onSave(form);
+    // Parse the raw tag input into a clean deduplicated array
+    const tags = [...new Set(
+      tagInput
+        .split(",")
+        .map((t) => t.trim().toLowerCase())
+        .filter((t) => t !== "")
+    )];
+
+    onSave({ ...form, tags });
   }
 
   return (
@@ -117,7 +129,15 @@ function ItemForm({ item, onSave, onCancel }) {
                 onChange={(e) => updateField("location", e.target.value)}
                 placeholder="e.g. Home office"
                 autoComplete="off"
+                list="location-suggestions"
               />
+              {locationSuggestions.length > 0 && (
+                <datalist id="location-suggestions">
+                  {locationSuggestions.map((loc) => (
+                    <option key={loc} value={loc} />
+                  ))}
+                </datalist>
+              )}
             </div>
           </div>
 
@@ -276,6 +296,22 @@ function ItemForm({ item, onSave, onCancel }) {
                 {photoError}
               </p>
             )}
+          </div>
+
+          {/* Tags */}
+          <div className="field">
+            <label className="field-label" htmlFor="field-tags">
+              Tags
+            </label>
+            <input
+              id="field-tags"
+              type="text"
+              value={tagInput}
+              onChange={(e) => setTagInput(e.target.value)}
+              placeholder="e.g. insured, fragile, apple"
+              autoComplete="off"
+            />
+            <p className="field-hint">Separate tags with commas</p>
           </div>
         </div>
 

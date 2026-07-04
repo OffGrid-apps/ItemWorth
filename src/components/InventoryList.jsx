@@ -117,6 +117,21 @@ function ChevronIcon({ expanded }) {
   );
 }
 
+function GroupIcon() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" strokeWidth="2" strokeLinecap="round"
+      strokeLinejoin="round" aria-hidden="true">
+      <line x1="8" y1="6" x2="21" y2="6" />
+      <line x1="8" y1="12" x2="21" y2="12" />
+      <line x1="8" y1="18" x2="21" y2="18" />
+      <line x1="3" y1="6" x2="3.01" y2="6" />
+      <line x1="3" y1="12" x2="3.01" y2="12" />
+      <line x1="3" y1="18" x2="3.01" y2="18" />
+    </svg>
+  );
+}
+
 /* ── Helpers ─────────────────────────────────────────────── */
 function getBadgeClass(category) {
   return `badge badge-${category.toLowerCase().replace(/\s+/g, "-")}`;
@@ -158,11 +173,13 @@ const SORT_OPTIONS = [
 /**
  * CSV export — always exports the currently visible (filtered + sorted) items.
  * The user sees exactly what will be exported via the context-aware button label.
+ * Photo is excluded from CSV; all other fields including 3B and 3C fields are included.
  */
 function exportCSV(items) {
   const headers = [
     "Name", "Category", "Location", "Quantity",
     "Unit Value", "Total Value", "Notes", "Date Added",
+    "Serial Number", "Purchase Date", "Condition", "Tags",
   ];
 
   const escape = (val) => {
@@ -186,6 +203,10 @@ function exportCSV(items) {
       item.createdAt
         ? new Date(item.createdAt).toLocaleDateString()
         : "",
+      item.serialNumber ?? "",
+      item.purchaseDate ?? "",
+      item.condition ?? "",
+      (item.tags ?? []).join(";"),
     ].map(escape).join(",");
   });
 
@@ -266,6 +287,17 @@ function ItemCard({ item, onEdit, onDelete }) {
 
         {item.notes && (
           <p className="item-card__notes">{item.notes}</p>
+        )}
+
+        {/* Tags — displayed as chips on the collapsed card */}
+        {(item.tags ?? []).length > 0 && (
+          <ul className="item-card__tags" role="list" aria-label="Tags">
+            {(item.tags).map((tag) => (
+              <li key={tag} className="item-card__tag" role="listitem">
+                {tag}
+              </li>
+            ))}
+          </ul>
         )}
 
         {/* ── Inline detail panel ── */}
@@ -394,9 +426,14 @@ function InventoryToolbar({
   visibleItems,
   allItems,
   onImportFile,
+  activeTag,
+  onTagChange,
+  allTags,
+  groupByLocation,
+  onToggleGroup,
 }) {
   const fileInputRef = useRef(null);
-  const hasFilters   = query.trim() !== "" || activeCategory !== "All";
+  const hasFilters   = query.trim() !== "" || activeCategory !== "All" || activeTag !== "";
   const isFiltered   = visibleCount < totalItems;
 
   function handleFileChange(e) {
@@ -409,6 +446,7 @@ function InventoryToolbar({
   function clearAll() {
     onQueryChange("");
     onCategoryChange("All");
+    onTagChange("");
   }
 
   return (
@@ -519,6 +557,19 @@ function InventoryToolbar({
             <UploadIcon />
             <span className="inv-btn-label">Import</span>
           </button>
+
+          {/* Group by location toggle */}
+          <button
+            type="button"
+            className={`btn btn-secondary${groupByLocation ? " inv-group-btn--active" : ""}`}
+            onClick={onToggleGroup}
+            aria-pressed={groupByLocation}
+            aria-label={groupByLocation ? "Switch to flat list view" : "Group items by location"}
+            title={groupByLocation ? "Flat list" : "Group by location"}
+          >
+            <GroupIcon />
+            <span className="inv-btn-label">Group</span>
+          </button>
         </div>
       </div>
 
@@ -544,6 +595,26 @@ function InventoryToolbar({
         )}
       </div>
 
+      {/* ── Row 3: tag filter chips (only when tags exist) ── */}
+      {allTags.length > 0 && (
+        <div className="inv-chips inv-chips--tags" role="group" aria-label="Filter by tag">
+          {allTags.map((tag) => {
+            const isActive = activeTag === tag;
+            return (
+              <button
+                key={tag}
+                type="button"
+                className={`inv-chip inv-chip--tag${isActive ? " inv-chip--active" : ""}`}
+                onClick={() => onTagChange(isActive ? "" : tag)}
+                aria-pressed={isActive}
+              >
+                #{tag}
+              </button>
+            );
+          })}
+        </div>
+      )}
+
       {/* ── Result count — shown only when filters are active ── */}
       {hasFilters && (
         <p className="inv-result-count" aria-live="polite" aria-atomic="true">
@@ -567,6 +638,8 @@ function InventoryList({ items, onEdit, onDelete, onAdd, onImportFile }) {
   const [query, setQuery]             = useState("");
   const [activeCategory, setCategory] = useState("All");
   const [sortBy, setSortBy]           = useState("newest");
+  const [activeTag, setActiveTag]     = useState("");
+  const [groupByLocation, setGroupByLocation] = useState(false);
 
   // Count per category across the full unfiltered inventory
   const categoryCounts = useMemo(() => {
@@ -577,7 +650,18 @@ function InventoryList({ items, onEdit, onDelete, onAdd, onImportFile }) {
     return counts;
   }, [items]);
 
-  // Filtered + sorted view — derived from items, query, category, sort
+  // All unique tags across the full inventory, sorted alphabetically
+  const allTags = useMemo(() => {
+    const seen = new Set();
+    for (const item of items) {
+      for (const tag of (item.tags ?? [])) {
+        seen.add(tag);
+      }
+    }
+    return [...seen].sort();
+  }, [items]);
+
+  // Filtered + sorted view — derived from items, query, category, tag, sort
   const visibleItems = useMemo(() => {
     const q = query.trim().toLowerCase();
 
@@ -585,15 +669,19 @@ function InventoryList({ items, onEdit, onDelete, onAdd, onImportFile }) {
       const matchesCategory =
         activeCategory === "All" || item.category === activeCategory;
 
+      const matchesTag =
+        activeTag === "" || (item.tags ?? []).includes(activeTag);
+
       const matchesQuery =
         !q ||
         item.name.toLowerCase().includes(q) ||
         item.category.toLowerCase().includes(q) ||
         item.location.toLowerCase().includes(q) ||
         item.notes.toLowerCase().includes(q) ||
-        (item.serialNumber ?? "").toLowerCase().includes(q);
+        (item.serialNumber ?? "").toLowerCase().includes(q) ||
+        (item.tags ?? []).some((t) => t.includes(q));
 
-      return matchesCategory && matchesQuery;
+      return matchesCategory && matchesTag && matchesQuery;
     });
 
     return [...filtered].sort((a, b) => {
@@ -617,11 +705,34 @@ function InventoryList({ items, onEdit, onDelete, onAdd, onImportFile }) {
           return (b.createdAt || 0) - (a.createdAt || 0);
       }
     });
-  }, [items, query, activeCategory, sortBy]);
+  }, [items, query, activeCategory, activeTag, sortBy]);
+
+  // Grouped view: Map<locationKey, { label, items, totalValue }>
+  const groupedItems = useMemo(() => {
+    if (!groupByLocation) return null;
+    const groups = new Map();
+    for (const item of visibleItems) {
+      const key = item.location?.trim() || "";
+      const label = key || "No location";
+      if (!groups.has(label)) {
+        groups.set(label, { label, items: [], totalValue: 0 });
+      }
+      const g = groups.get(label);
+      g.items.push(item);
+      g.totalValue += (Number(item.estimatedValue) || 0) * (Number(item.quantity) || 1);
+    }
+    // Sort groups alphabetically; "No location" goes last
+    return [...groups.values()].sort((a, b) => {
+      if (a.label === "No location") return 1;
+      if (b.label === "No location") return -1;
+      return a.label.localeCompare(b.label);
+    });
+  }, [visibleItems, groupByLocation]);
 
   function clearFilters() {
     setQuery("");
     setCategory("All");
+    setActiveTag("");
   }
 
   // No inventory at all — show the empty state, no toolbar yet
@@ -651,11 +762,46 @@ function InventoryList({ items, onEdit, onDelete, onAdd, onImportFile }) {
         visibleItems={visibleItems}
         allItems={items}
         onImportFile={onImportFile}
+        activeTag={activeTag}
+        onTagChange={setActiveTag}
+        allTags={allTags}
+        groupByLocation={groupByLocation}
+        onToggleGroup={() => setGroupByLocation((v) => !v)}
       />
 
       {visibleItems.length === 0 ? (
         <NoResults onClear={clearFilters} />
+      ) : groupByLocation && groupedItems ? (
+        /* ── Grouped by location ── */
+        <div className="item-groups">
+          {groupedItems.map((group) => (
+            <div key={group.label} className="item-group">
+              <div className="item-group__header">
+                <h3 className="item-group__title">{group.label}</h3>
+                <span className="item-group__meta">
+                  {group.items.length} item{group.items.length !== 1 ? "s" : ""}
+                  {" · "}
+                  ${group.totalValue.toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
+                </span>
+              </div>
+              <div className="item-list">
+                {group.items.map((item) => (
+                  <ItemCard
+                    key={item.id}
+                    item={item}
+                    onEdit={onEdit}
+                    onDelete={onDelete}
+                  />
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
       ) : (
+        /* ── Flat list (default) ── */
         <div className="item-list">
           {visibleItems.map((item) => (
             <ItemCard

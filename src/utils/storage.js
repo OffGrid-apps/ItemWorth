@@ -44,6 +44,7 @@ export function createItem() {
     purchaseDate: "",
     condition: "",
     photo: "",
+    tags: [],
   };
 }
 
@@ -135,6 +136,10 @@ export function validateImport(parsed) {
         purchaseDate: typeof item.purchaseDate === "string" ? item.purchaseDate : "",
         condition:    typeof item.condition === "string" ? item.condition : "",
         photo:        typeof item.photo === "string" ? item.photo : "",
+        // 3C fields — default to [] so pre-3C backups import cleanly
+        tags: Array.isArray(item.tags)
+          ? item.tags.filter((t) => typeof t === "string" && t.trim() !== "")
+          : [],
       });
     }
   }
