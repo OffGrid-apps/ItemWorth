@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CATEGORIES, compressImage } from "../utils/storage";
 
 function ItemForm({ item, onSave, onCancel, locationSuggestions = [] }) {
@@ -10,6 +10,12 @@ function ItemForm({ item, onSave, onCancel, locationSuggestions = [] }) {
   const [tagInput, setTagInput] = useState(
     () => (item.tags ?? []).join(", ")
   );
+
+  // Auto-focus the name field when the form mounts
+  const nameInputRef = useRef(null);
+  useEffect(() => {
+    nameInputRef.current?.focus();
+  }, []);
 
   const isEditing = Boolean(item.name);
 
@@ -84,6 +90,7 @@ function ItemForm({ item, onSave, onCancel, locationSuggestions = [] }) {
             <input
               id="field-name"
               type="text"
+              ref={nameInputRef}
               value={form.name}
               onChange={(e) => updateField("name", e.target.value)}
               placeholder="e.g. MacBook Pro 14"
@@ -240,7 +247,7 @@ function ItemForm({ item, onSave, onCancel, locationSuggestions = [] }) {
 
           {/* Photo */}
           <div className="field">
-            <span className="field-label">Photo</span>
+            <span className="field-label" id="photo-field-label">Photo</span>
             {form.photo ? (
               <div className="photo-preview">
                 <img
@@ -255,6 +262,7 @@ function ItemForm({ item, onSave, onCancel, locationSuggestions = [] }) {
                       type="file"
                       accept="image/*"
                       className="sr-only"
+                      aria-labelledby="photo-field-label"
                       onChange={handlePhotoChange}
                       disabled={photoLoading}
                     />
@@ -283,6 +291,7 @@ function ItemForm({ item, onSave, onCancel, locationSuggestions = [] }) {
                   type="file"
                   accept="image/*"
                   className="sr-only"
+                  aria-labelledby="photo-field-label"
                   onChange={handlePhotoChange}
                   disabled={photoLoading}
                 />

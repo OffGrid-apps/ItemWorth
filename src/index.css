@@ -1978,3 +1978,59 @@ h3 { font-size: var(--text-lg); }
   font-weight: var(--weight-medium);
   white-space: nowrap;
 }
+
+/* ==========================================================
+   23. ACCESSIBILITY IMPROVEMENTS (Milestone 4A)
+   ========================================================== */
+
+/* --- Skip-to-content link --- */
+/* Visually hidden by default; revealed on keyboard focus */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: var(--sp-4);
+  z-index: 9999;
+  padding: 10px 18px;
+  background: var(--color-primary);
+  color: #fff;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+  text-decoration: none;
+  transition: top var(--dur-fast) var(--ease-out);
+}
+
+.skip-link:focus {
+  top: 0;
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+/* --- Chevron icon rotation (replaces inline style) --- */
+/* The transition is declared in CSS so prefers-reduced-motion can suppress it */
+.chevron-icon {
+  transform: rotate(0deg);
+  transition: transform 200ms ease;
+}
+
+.chevron-icon--expanded {
+  transform: rotate(180deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chevron-icon {
+    transition: none;
+  }
+  .skip-link {
+    transition: none;
+  }
+}
+
+/* --- Item card tag chip touch targets --- */
+/* Chips are informational, not interactive, but a comfortable minimum
+   height improves usability and avoids accidental mis-taps on nearby controls */
+.item-card__tag {
+  min-height: 26px;
+  display: inline-flex;
+  align-items: center;
+}

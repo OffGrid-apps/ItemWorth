@@ -10,11 +10,11 @@ This roadmap outlines the planned evolution of ItemWorth. It reflects the curren
 
 **Application:** ItemWorth
 
-**Current Version:** v0.6.0
+**Current Version:** v0.7.0
 
 **Development Status:** Active Development
 
-**Current Milestone:** 3C — Organization Enhancements
+**Current Milestone:** 4A — Accessibility Review (Complete)
 
 ---
 
@@ -162,69 +162,59 @@ Features:
 
 ---
 
-# Current Development
+## ✅ Milestone 3C — Organization Enhancements
 
-## 🚧 Milestone 3C — Organization Enhancements
+**Status:** Complete
 
-**Status:** In Progress
+Improved organization, navigation, and data entry.
 
-Focused on improving organization, navigation, and data entry.
-
-Planned capabilities include:
-
-### Location Organization
+Features:
 
 - Group inventory by location
 - Toggle between grouped and flat views
-- Per-location item counts
-- Per-location value subtotals
-
-### Tags
-
-- Custom tags
-- Multiple tags per item
-- Search by tag
-- Filter by tag
+- Per-location item counts and value subtotals
+- Custom tags with multiple tags per item
+- Search and filter by tag
 - Tag chips displayed on inventory cards
+- Location autocomplete for faster data entry
+- Expanded CSV export (Serial Number, Purchase Date, Condition, Tags)
 
-### Improved Data Entry
+---
 
-- Saved location autocomplete
-- Faster location selection
-- Improved inventory organization workflow
+## ✅ Milestone 4A — Accessibility Review
 
-### CSV Enhancements
+**Status:** Complete
 
-Expanded export support for:
+Conducted a WCAG-focused accessibility audit and implemented targeted improvements.
 
-- Serial Number
-- Purchase Date
-- Condition
-- Tags
+Issues resolved:
+
+- Added skip-to-content link (WCAG 2.4.1)
+- Auto-focus on item form open (WCAG 2.4.3)
+- Focus returned to trigger element when dialogs close (WCAG 2.4.3)
+- Keyboard focus trap implemented in modal dialogs (WCAG 2.1.2, 2.4.3)
+- ChevronIcon transition moved to CSS, respects prefers-reduced-motion (WCAG 2.3.3)
+- Photo file inputs now have programmatic label association (WCAG 4.1.2)
+- Item card tag chip touch targets improved (WCAG 2.5.5)
+
+Known deferred issue:
+
+- `--color-text-muted` (#94a3b8) contrast ratio is below AA for normal text.
+  Deferred to Milestone 4C to allow a holistic design review without disrupting
+  the current visual hierarchy.
 
 ---
 
 # Planned Milestones
 
-## Milestone 4A — Accessibility Review
-
-Planned objectives:
-
-- Accessibility audit
-- Keyboard navigation improvements
-- Screen reader review
-- Focus management improvements
-- Color contrast verification
-- WCAG-focused usability improvements
-
----
-
 ## Milestone 4B — Performance & Reliability
+
+**Status:** Next
 
 Planned objectives:
 
 - Storage optimization
-- localStorage quota handling
+- localStorage quota handling and user-visible warnings
 - Improved error handling
 - Performance profiling
 - Bundle optimization
@@ -234,9 +224,12 @@ Planned objectives:
 
 ## Milestone 4C — Version 1.0 Release
 
+**Status:** Planned
+
 Planned objectives:
 
 - Final interface polish
+- Color contrast review (including --color-text-muted)
 - Bug fixes
 - Comprehensive regression testing
 - Documentation review
@@ -282,15 +275,17 @@ Incremental improvements are preferred over large-scale rewrites.
 
 # Version History
 
-| Version | Status | Description |
-|----------|--------|-------------|
-| v0.1.0 | Released | Initial Foundation |
-| v0.2.0 | Released | Inventory Management Enhancements |
-| v0.3.0 | Released | Backup & Restore |
-| v0.4.0 | Released | Progressive Web App |
-| v0.5.0 | Released | First-Run Experience |
-| v0.6.0 | Released | Rich Item Information |
-| Next | In Development | Organization Enhancements |
+| Version | Status    | Description                     |
+|---------|-----------|----------------------------------|
+| v0.1.0  | Released  | Initial Foundation               |
+| v0.2.0  | Released  | Inventory Management             |
+| v0.3.0  | Released  | Backup & Restore                 |
+| v0.4.0  | Released  | Progressive Web App              |
+| v0.5.0  | Released  | First-Run Experience             |
+| v0.6.0  | Released  | Rich Item Information            |
+| v0.7.0  | Released  | Organization Enhancements        |
+| v0.8.0  | Released  | Accessibility Review             |
+| Next    | Planned   | Performance & Reliability        |
 
 ---
 

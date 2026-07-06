@@ -29,7 +29,45 @@ function useToast() {
   return { toasts, show };
 }
 
-/* ── Icons ───────────────────────────────────────────────── */
+/* ── Focus trap for modal dialogs ────────────────────────── */
+const FOCUSABLE = [
+  'a[href]',
+  'button:not([disabled])',
+  'input:not([disabled])',
+  'select:not([disabled])',
+  'textarea:not([disabled])',
+  '[tabindex]:not([tabindex="-1"])',
+].join(", ");
+
+function useFocusTrap(containerRef, isActive) {
+  useEffect(() => {
+    if (!isActive || !containerRef.current) return;
+    const container = containerRef.current;
+
+    function handleKeyDown(e) {
+      if (e.key !== "Tab") return;
+      const focusable = [...container.querySelectorAll(FOCUSABLE)];
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last  = focusable[focusable.length - 1];
+
+      if (e.shiftKey) {
+        if (document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else {
+        if (document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    }
+
+    container.addEventListener("keydown", handleKeyDown);
+    return () => container.removeEventListener("keydown", handleKeyDown);
+  }, [containerRef, isActive]);
+}
 function CheckIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
@@ -291,7 +329,10 @@ function WelcomePanel({ onStart, onLoadSamples, onDismiss }) {
 
 /* ── Delete Confirmation Dialog ──────────────────────────── */
 function DeleteDialog({ itemName, onConfirm, onCancel }) {
-  const cancelRef = useRef(null);
+  const cancelRef    = useRef(null);
+  const containerRef = useRef(null);
+
+  useFocusTrap(containerRef, true);
 
   useEffect(() => {
     cancelRef.current?.focus();
@@ -312,7 +353,7 @@ function DeleteDialog({ itemName, onConfirm, onCancel }) {
         if (e.target === e.currentTarget) onCancel();
       }}
     >
-      <div className="dialog">
+      <div className="dialog" ref={containerRef}>
         <div className="dialog__icon" aria-hidden="true">
           <TrashIcon />
         </div>
@@ -348,7 +389,10 @@ function DeleteDialog({ itemName, onConfirm, onCancel }) {
 
 /* ── Import Preview Dialog ───────────────────────────────── */
 function ImportDialog({ preview, onConfirm, onCancel }) {
-  const confirmRef = useRef(null);
+  const confirmRef   = useRef(null);
+  const containerRef = useRef(null);
+
+  useFocusTrap(containerRef, true);
 
   useEffect(() => {
     // Focus the confirm button when there are items to add,
@@ -373,7 +417,7 @@ function ImportDialog({ preview, onConfirm, onCancel }) {
         if (e.target === e.currentTarget) onCancel();
       }}
     >
-      <div className="dialog">
+      <div className="dialog" ref={containerRef}>
         <div className="dialog__icon dialog__icon--info" aria-hidden="true">
           <InfoIcon />
         </div>
@@ -463,6 +507,9 @@ function App() {
   const [importError, setImportError]     = useState("");
   const [loaded, setLoaded]               = useState(false);
   const { toasts, show: showToast }       = useToast();
+
+  // Ref to restore focus when a dialog closes
+  const dialogTriggerRef = useRef(null);
 
   // ── Onboarding ───────────────────────────────────────────
   // Welcome panel is shown once to new users when the inventory is empty.
@@ -619,6 +666,7 @@ function App() {
   }
 
   function requestDelete(item) {
+    dialogTriggerRef.current = document.activeElement;
     setPendingDelete(item);
   }
 
@@ -628,10 +676,16 @@ function App() {
     setItems((current) => current.filter((x) => x.id !== pendingDelete.id));
     setPendingDelete(null);
     showToast(`"${name}" removed.`, "danger");
+    // Focus returns to the inventory section since the deleted item's
+    // button no longer exists in the DOM
+    try { dialogTriggerRef.current?.focus(); } catch {}
+    dialogTriggerRef.current = null;
   }
 
   function cancelDelete() {
     setPendingDelete(null);
+    try { dialogTriggerRef.current?.focus(); } catch {}
+    dialogTriggerRef.current = null;
   }
 
   function editItem(item) {
@@ -652,6 +706,8 @@ function App() {
       setImportError("Please select a JSON backup file (.json).");
       return;
     }
+
+    dialogTriggerRef.current = document.activeElement;
 
     const reader = new FileReader();
 
@@ -699,11 +755,15 @@ function App() {
       `${addedCount} item${addedCount !== 1 ? "s" : ""} imported successfully.`,
       "success"
     );
+    try { dialogTriggerRef.current?.focus(); } catch {}
+    dialogTriggerRef.current = null;
   }
 
   function cancelImport() {
     setImportPreview(null);
     setImportError("");
+    try { dialogTriggerRef.current?.focus(); } catch {}
+    dialogTriggerRef.current = null;
   }
 
   return (
@@ -716,7 +776,7 @@ function App() {
         />
       )}
 
-      <main className="app">
+      <main className="app" id="main-content">
         {/* ── Header ── */}
         <header className="app-header">
           <div className="app-header__eyebrow" aria-label="Personal Inventory">
