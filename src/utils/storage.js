@@ -27,7 +27,32 @@ export function loadItems() {
 }
 
 export function saveItems(items) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+    return { ok: true, quota: false };
+  } catch (err) {
+    const isQuota =
+      err instanceof DOMException &&
+      (err.name === "QuotaExceededError" ||
+        err.name === "NS_ERROR_DOM_QUOTA_REACHED");
+    return { ok: false, quota: isQuota };
+  }
+}
+
+/**
+ * Uses the Storage API to estimate current origin storage usage.
+ * Returns { used, quota, ratio } in bytes, or null if the API is unavailable.
+ * Resolves quickly and never throws — safe to call in a useEffect.
+ */
+export async function getStorageWarning() {
+  try {
+    if (!navigator?.storage?.estimate) return null;
+    const { usage, quota } = await navigator.storage.estimate();
+    if (!quota) return null;
+    return { used: usage ?? 0, quota, ratio: (usage ?? 0) / quota };
+  } catch {
+    return null;
+  }
 }
 
 export function createItem() {

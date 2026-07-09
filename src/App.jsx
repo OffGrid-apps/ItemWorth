@@ -7,6 +7,7 @@ import {
   calculateTotalValue,
   validateImport,
   mergeImport,
+  getStorageWarning,
 } from "./utils/storage";
 import Dashboard from "./components/Dashboard";
 import ItemForm from "./components/ItemForm";
@@ -623,7 +624,37 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (loaded) saveItems(items);
+    if (!loaded) return;
+    const result = saveItems(items);
+    if (!result.ok) {
+      if (result.quota) {
+        showToast(
+          "Storage is full. Delete photos or items, or export a backup to free space.",
+          "danger"
+        );
+      } else {
+        showToast(
+          "Your changes could not be saved. Please try again.",
+          "danger"
+        );
+      }
+    }
+  }, [items, loaded]);
+
+  // Proactive storage check — warn once per session when usage exceeds 80 %
+  const storageWarnedRef = useRef(false);
+  useEffect(() => {
+    if (!loaded || storageWarnedRef.current) return;
+    getStorageWarning().then((info) => {
+      if (!info) return;
+      if (info.ratio >= 0.8) {
+        storageWarnedRef.current = true;
+        showToast(
+          "Storage is almost full. Export a backup or delete photos to avoid losing changes.",
+          "danger"
+        );
+      }
+    });
   }, [items, loaded]);
 
   const totalValue = useMemo(() => calculateTotalValue(items), [items]);

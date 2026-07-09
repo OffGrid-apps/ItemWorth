@@ -10,11 +10,11 @@ This roadmap outlines the planned evolution of ItemWorth. It reflects the curren
 
 **Application:** ItemWorth
 
-**Current Version:** v0.7.0
+**Current Version:** v0.8.0
 
 **Development Status:** Active Development
 
-**Current Milestone:** 4A — Accessibility Review (Complete)
+**Current Milestone:** 4B — Performance & Reliability (Complete)
 
 ---
 
@@ -205,26 +205,28 @@ Known deferred issue:
 
 ---
 
-# Planned Milestones
+# Completed Milestones (continued)
 
-## Milestone 4B — Performance & Reliability
+## ✅ Milestone 4B — Performance & Reliability
 
-**Status:** Next
+**Status:** Complete
 
-Planned objectives:
+Improved storage reliability and error handling.
 
-- Storage optimization
-- localStorage quota handling and user-visible warnings
-- Improved error handling
-- Performance profiling
-- Bundle optimization
-- Additional Progressive Web App hardening
+Features:
+
+- localStorage quota detection and user-visible error toasts
+- Proactive storage warning when usage exceeds 80%
+- Hardened saveItems with QuotaExceededError handling
+- Clear, actionable error messages directing users to free space
 
 ---
 
+# Planned Milestones
+
 ## Milestone 4C — Version 1.0 Release
 
-**Status:** Planned
+**Status:** Next
 
 Planned objectives:
 
@@ -285,7 +287,8 @@ Incremental improvements are preferred over large-scale rewrites.
 | v0.6.0  | Released  | Rich Item Information            |
 | v0.7.0  | Released  | Organization Enhancements        |
 | v0.8.0  | Released  | Accessibility Review             |
-| Next    | Planned   | Performance & Reliability        |
+| v0.9.0  | Released  | Performance & Reliability        |
+| Next    | Planned   | Version 1.0 Release              |
 
 ---
 
