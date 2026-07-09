@@ -10,11 +10,11 @@ This roadmap outlines the planned evolution of ItemWorth. It reflects the curren
 
 **Application:** ItemWorth
 
-**Current Version:** v0.8.0
+**Current Version:** v1.0.0
 
-**Development Status:** Active Development
+**Development Status:** Version 1.0 Released
 
-**Current Milestone:** 4B — Performance & Reliability (Complete)
+**Current Milestone:** 4C — Version 1.0 Release (Complete)
 
 ---
 
@@ -222,18 +222,19 @@ Features:
 
 ---
 
-# Planned Milestones
+# Completed Milestones (final)
 
-## Milestone 4C — Version 1.0 Release
+## ✅ Milestone 4C — Version 1.0 Release
 
-**Status:** Next
+**Status:** Complete
 
-Planned objectives:
+Completed objectives:
 
 - Final interface polish
-- Color contrast review (including --color-text-muted)
-- Bug fixes
-- Comprehensive regression testing
+- Color contrast review, including --color-text-muted
+- Static page muted-text contrast alignment
+- PWA update-check interval cleanup
+- Sample inventory data-shape consistency
 - Documentation review
 - Production readiness assessment
 - Version 1.0 release
@@ -288,7 +289,7 @@ Incremental improvements are preferred over large-scale rewrites.
 | v0.7.0  | Released  | Organization Enhancements        |
 | v0.8.0  | Released  | Accessibility Review             |
 | v0.9.0  | Released  | Performance & Reliability        |
-| Next    | Planned   | Version 1.0 Release              |
+| v1.0.0  | Released  | Version 1.0 Release              |
 
 ---
 

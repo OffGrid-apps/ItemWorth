@@ -69,6 +69,7 @@ function useFocusTrap(containerRef, isActive) {
     return () => container.removeEventListener("keydown", handleKeyDown);
   }, [containerRef, isActive]);
 }
+
 function CheckIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
@@ -227,6 +228,11 @@ const SAMPLE_ITEMS = [
     location: "Home office",
     quantity: 1,
     estimatedValue: "1999",
+    serialNumber: "",
+    purchaseDate: "",
+    condition: "",
+    photo: "",
+    tags: [],
     notes: "M3 Pro, Space Black, purchased 2024",
     createdAt: Date.now() - 5 * 24 * 60 * 60 * 1000,
   },
@@ -237,6 +243,11 @@ const SAMPLE_ITEMS = [
     location: "Home office",
     quantity: 1,
     estimatedValue: "650",
+    serialNumber: "",
+    purchaseDate: "",
+    condition: "",
+    photo: "",
+    tags: [],
     notes: "Height-adjustable, walnut top",
     createdAt: Date.now() - 4 * 24 * 60 * 60 * 1000,
   },
@@ -247,6 +258,11 @@ const SAMPLE_ITEMS = [
     location: "Garage",
     quantity: 1,
     estimatedValue: "129",
+    serialNumber: "",
+    purchaseDate: "",
+    condition: "",
+    photo: "",
+    tags: [],
     notes: "18V, includes two batteries",
     createdAt: Date.now() - 3 * 24 * 60 * 60 * 1000,
   },
@@ -257,6 +273,11 @@ const SAMPLE_ITEMS = [
     location: "Bedroom closet",
     quantity: 1,
     estimatedValue: "280",
+    serialNumber: "",
+    purchaseDate: "",
+    condition: "",
+    photo: "",
+    tags: [],
     notes: "Down-filled, size M",
     createdAt: Date.now() - 2 * 24 * 60 * 60 * 1000,
   },
@@ -267,6 +288,11 @@ const SAMPLE_ITEMS = [
     location: "Garage",
     quantity: 1,
     estimatedValue: "900",
+    serialNumber: "",
+    purchaseDate: "",
+    condition: "",
+    photo: "",
+    tags: [],
     notes: "Aluminium frame, 21-speed",
     createdAt: Date.now() - 1 * 24 * 60 * 60 * 1000,
   },
@@ -594,6 +620,7 @@ function App() {
 
   // ── PWA: update notification ─────────────────────────────
   const [updateDismissed, setUpdateDismissed] = useState(false);
+  const updateCheckIntervalRef = useRef(null);
 
   const {
     needRefresh: [needRefresh, setNeedRefresh],
@@ -602,10 +629,21 @@ function App() {
     onRegistered(r) {
       // Periodically check for updates when the SW is registered
       if (r) {
-        setInterval(() => r.update(), 60 * 60 * 1000); // hourly
+        if (updateCheckIntervalRef.current) {
+          clearInterval(updateCheckIntervalRef.current);
+        }
+        updateCheckIntervalRef.current = setInterval(() => r.update(), 60 * 60 * 1000); // hourly
       }
     },
   });
+
+  useEffect(() => {
+    return () => {
+      if (updateCheckIntervalRef.current) {
+        clearInterval(updateCheckIntervalRef.current);
+      }
+    };
+  }, []);
 
   const showUpdateBanner = needRefresh && !updateDismissed;
 

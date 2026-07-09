@@ -263,23 +263,21 @@ Every release should satisfy the following requirements:
 
 # Current Roadmap
 
+Current version:
+
+- Version 1.0.0
+
 Completed:
 
-- Milestone 1
-- Milestone 2A
-- Milestone 2B
-- Milestone 2C
-- Milestone 3A
-- Milestone 3B
-
-Current:
-
-- Milestone 3C
-
-Planned:
-
-- Milestone 4A — Accessibility Audit
-- Milestone 4B — Performance & PWA Hardening
+- Milestone 1 — Foundation
+- Milestone 2A — Inventory Management
+- Milestone 2B — Backup & Restore
+- Milestone 2C — Progressive Web App
+- Milestone 3A — First-Run Experience
+- Milestone 3B — Rich Item Information
+- Milestone 3C — Organization Enhancements
+- Milestone 4A — Accessibility Review
+- Milestone 4B — Performance & Reliability
 - Milestone 4C — Final Polish & Version 1.0
 
 ---
