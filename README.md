@@ -34,6 +34,27 @@ The project prioritizes long-term stability over feature bloat.
 
 Every design and engineering decision should reinforce these principles.
 
+
+## Live Demo
+
+Try ItemWorth online or install it as a Progressive Web App.
+
+➡️ **[Launch ItemWorth](https://offgrid-apps.github.io/ItemWorth/)**
+
+## Screenshots
+
+### Dashboard
+
+![ItemWorth Dashboard](screenshots/dashboard.jpg)
+
+The main dashboard provides a clear overview of your inventory, including search, filtering, categories, item counts, and estimated total value.
+
+### Add New Item
+
+![Add New Item](screenshots/add-item.jpg)
+
+Create detailed inventory records with categories, values, conditions, serial numbers, purchase dates, locations, notes, and photos.
+
 ---
 
 # Features
