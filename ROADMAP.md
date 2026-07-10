@@ -10,7 +10,7 @@ This roadmap outlines the planned evolution of ItemWorth. It reflects the curren
 
 **Application:** ItemWorth
 
-**Current Version:** v1.0.1
+**Current Version:** v1.1.0
 
 **Development Status:** Public Deployment and Support Complete
 
@@ -327,7 +327,8 @@ Incremental improvements are preferred over large-scale rewrites.
 | v0.8.0  | Released  | Accessibility Review             |
 | v0.9.0  | Released  | Performance & Reliability        |
 | v1.0.0  | Released  | Version 1.0 Release              |
-| v1.0.1  | Released  | Public Deployment & Support       |
+| v1.0.1  | Released  | GitHub Pages & Offline Fixes      |
+| v1.1.0  | Released  | Public Feedback & Support         |
 
 ---
 

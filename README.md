@@ -306,7 +306,7 @@ Every release should satisfy the following requirements:
 
 Current version:
 
-- Version 1.0.1
+- Version 1.1.0
 
 Completed:
 
