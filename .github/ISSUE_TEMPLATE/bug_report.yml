@@ -1,0 +1,143 @@
+name: Bug report
+description: Report a reproducible problem with ItemWorth
+title: "[Bug]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for helping improve ItemWorth.
+
+        **Protect your privacy:** Do not upload JSON backup files or include private inventory details, serial numbers, receipts, exact storage locations, addresses, or unredacted photos. GitHub issues are public.
+
+        Please search existing issues before submitting a new report.
+
+  - type: input
+    id: summary
+    attributes:
+      label: Problem summary
+      description: Briefly describe what went wrong.
+      placeholder: ItemWorth shows an error when...
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: List the exact steps that consistently cause the problem.
+      placeholder: |
+        1. Open...
+        2. Tap...
+        3. Observe...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What did you expect ItemWorth to do?
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: What happened instead? Include the exact error text when possible.
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: ItemWorth version
+      description: Find this on the About page.
+      placeholder: e.g. 1.0.1
+    validations:
+      required: true
+
+  - type: input
+    id: device
+    attributes:
+      label: Device
+      placeholder: e.g. Moto G Stylus (2022), Windows laptop, iPhone 15
+    validations:
+      required: true
+
+  - type: input
+    id: operating-system
+    attributes:
+      label: Operating system and version
+      placeholder: e.g. Android 12, Windows 11, iOS 18
+    validations:
+      required: true
+
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and version
+      placeholder: e.g. Chrome 138, Edge 138, Safari 18
+    validations:
+      required: true
+
+  - type: dropdown
+    id: installed
+    attributes:
+      label: How are you using ItemWorth?
+      options:
+        - Installed Progressive Web App
+        - Browser tab
+        - Both
+        - Not sure
+    validations:
+      required: true
+
+  - type: dropdown
+    id: connectivity
+    attributes:
+      label: When does the problem occur?
+      options:
+        - Online only
+        - Offline only
+        - Online and offline
+        - Not sure
+    validations:
+      required: true
+
+  - type: dropdown
+    id: cleared-data
+    attributes:
+      label: Was browser or site data recently cleared?
+      options:
+        - "No"
+        - "Yes"
+        - Not sure
+    validations:
+      required: true
+
+  - type: dropdown
+    id: persistence
+    attributes:
+      label: Was inventory persistence affected?
+      description: Select whether items failed to save, disappeared, or otherwise changed unexpectedly.
+      options:
+        - "No"
+        - "Yes"
+        - Not sure
+    validations:
+      required: true
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots or additional context
+      description: Optional. Redact all personal inventory information before attaching images.
+
+  - type: checkboxes
+    id: privacy-confirmation
+    attributes:
+      label: Privacy confirmation
+      options:
+        - label: I have removed private inventory information and have not attached a JSON backup file.
+          required: true

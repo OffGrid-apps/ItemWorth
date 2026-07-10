@@ -10,11 +10,11 @@ This roadmap outlines the planned evolution of ItemWorth. It reflects the curren
 
 **Application:** ItemWorth
 
-**Current Version:** v1.0.0
+**Current Version:** v1.0.1
 
-**Development Status:** Version 1.0 Released
+**Development Status:** Public Deployment and Support Complete
 
-**Current Milestone:** 4C — Version 1.0 Release (Complete)
+**Current Milestone:** 5B — Public Feedback and Support (Complete)
 
 ---
 
@@ -241,6 +241,43 @@ Completed objectives:
 
 ---
 
+## ✅ Milestone 5A — Public Deployment
+
+**Status:** Complete
+
+Published ItemWorth as a publicly accessible and installable web application.
+
+Completed objectives:
+
+- GitHub Pages hosting
+- Automated deployment through GitHub Actions
+- Public live-app URL
+- GitHub Pages base-path configuration
+- Installed-PWA launch-path correction
+- About, Privacy, and Terms navigation fixes
+- Verified online and offline installed-app behavior
+- README live-demo link and application screenshots
+
+---
+
+## ✅ Milestone 5B — Public Feedback and Support
+
+**Status:** Complete
+
+Added structured, privacy-conscious support channels for public users.
+
+Completed objectives:
+
+- Structured GitHub bug-report issue form
+- Structured GitHub feature-request issue form
+- Privacy guidance for public issue submissions
+- PWA, offline, installation, and persistence diagnostic prompts
+- README feedback and support documentation
+- About-page links to the live app, repository, bug reports, and feature requests
+- Disabled unstructured blank issues
+
+---
+
 # Future Considerations
 
 The following ideas may be evaluated after Version 1.0. They are exploratory and are **not currently scheduled**.
@@ -290,6 +327,7 @@ Incremental improvements are preferred over large-scale rewrites.
 | v0.8.0  | Released  | Accessibility Review             |
 | v0.9.0  | Released  | Performance & Reliability        |
 | v1.0.0  | Released  | Version 1.0 Release              |
+| v1.0.1  | Released  | Public Deployment & Support       |
 
 ---
 

@@ -1,0 +1,74 @@
+name: Feature request
+description: Suggest a focused improvement to ItemWorth
+title: "[Feature]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for suggesting an improvement.
+
+        ItemWorth prioritizes offline operation, privacy, accessibility, and a lightweight architecture. Please describe the user problem before proposing a solution.
+
+        **Protect your privacy:** Do not include backup files, private inventory data, serial numbers, receipts, locations, or personal photos in this public issue.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or need
+      description: What task is difficult or impossible today?
+      placeholder: I need a better way to...
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed improvement
+      description: Describe the smallest change that could address the problem.
+    validations:
+      required: true
+
+  - type: textarea
+    id: benefit
+    attributes:
+      label: Expected benefit
+      description: Who would benefit, and how would the improvement help?
+    validations:
+      required: true
+
+  - type: textarea
+    id: workaround
+    attributes:
+      label: Current workaround
+      description: Is there a way to accomplish this today?
+      placeholder: No workaround, or describe the current process.
+
+  - type: dropdown
+    id: offline
+    attributes:
+      label: Must this work offline?
+      options:
+        - "Yes"
+        - "No"
+        - Not sure
+    validations:
+      required: true
+
+  - type: textarea
+    id: privacy
+    attributes:
+      label: Privacy or data implications
+      description: Would this feature store, transmit, import, export, or expose any additional user data?
+      placeholder: None known, or describe the implications.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: principles
+    attributes:
+      label: Project principles
+      options:
+        - label: I understand that ItemWorth prioritizes offline-first, privacy-first, accessible, and maintainable solutions.
+          required: true
+        - label: I have removed private inventory information and have not attached a JSON backup file.
+          required: true

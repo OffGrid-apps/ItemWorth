@@ -100,6 +100,26 @@ Create detailed inventory records with categories, values, conditions, serial nu
 
 ---
 
+# Feedback and Support
+
+ItemWorth uses GitHub Issues for structured bug reports and feature requests.
+Submitting an issue requires an Internet connection and a GitHub account.
+
+- **[Report a problem](https://github.com/OffGrid-apps/ItemWorth/issues/new?template=bug_report.yml)**
+- **[Suggest an improvement](https://github.com/OffGrid-apps/ItemWorth/issues/new?template=feature_request.yml)**
+- **[View existing issues](https://github.com/OffGrid-apps/ItemWorth/issues)**
+- **[Open the live app](https://offgrid-apps.github.io/ItemWorth/)**
+
+For installation, PWA, offline, or data-persistence problems, include your device,
+operating system, browser version, whether ItemWorth was installed, and whether
+the issue occurs online, offline, or both.
+
+> **Protect your privacy:** Never post JSON backup files, complete inventory lists,
+> serial numbers, receipts, exact storage locations, private photos, addresses, or
+> other sensitive personal information in a public issue.
+
+---
+
 # Technology Stack
 
 ItemWorth intentionally uses a minimal technology stack.
@@ -286,7 +306,7 @@ Every release should satisfy the following requirements:
 
 Current version:
 
-- Version 1.0.0
+- Version 1.0.1
 
 Completed:
 
@@ -300,6 +320,8 @@ Completed:
 - Milestone 4A — Accessibility Review
 - Milestone 4B — Performance & Reliability
 - Milestone 4C — Final Polish & Version 1.0
+- Milestone 5A — Public Deployment
+- Milestone 5B — Public Feedback & Support
 
 ---
 
