@@ -863,7 +863,7 @@ function App() {
             </div>
 
             <nav className="app-header__nav" aria-label="Site navigation">
-              <a href="/about.html" className="nav-link">
+              <a href={`${import.meta.env.BASE_URL}about.html`} className="nav-link">
                 About
               </a>
             </nav>
