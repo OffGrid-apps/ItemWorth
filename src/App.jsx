@@ -8,6 +8,8 @@ import {
   validateImport,
   mergeImport,
   getStorageWarning,
+  readPreference,
+  writePreference,
 } from "./utils/storage";
 import Dashboard from "./components/Dashboard";
 import ItemForm from "./components/ItemForm";
@@ -543,12 +545,18 @@ function App() {
   // The `loaded` guard prevents a flash for existing users while localStorage
   // is being read on startup.
   const [welcomeDismissed, setWelcomeDismissed] = useState(
-    () => localStorage.getItem(WELCOME_DISMISSED_KEY) === "true"
+    () => readPreference(WELCOME_DISMISSED_KEY).value === "true"
   );
 
   function dismissWelcome() {
     setWelcomeDismissed(true);
-    localStorage.setItem(WELCOME_DISMISSED_KEY, "true");
+    const result = writePreference(WELCOME_DISMISSED_KEY, "true");
+    if (!result.ok) {
+      showToast(
+        "Welcome preference could not be saved because on-device storage is unavailable.",
+        "danger"
+      );
+    }
   }
 
   function handleWelcomeStart() {
@@ -568,7 +576,7 @@ function App() {
   // null means the browser doesn't support it or the app is already installed.
   const [deferredPrompt, setDeferredPrompt]     = useState(null);
   const [installDismissed, setInstallDismissed] = useState(
-    () => localStorage.getItem(INSTALL_DISMISSED_KEY) === "true"
+    () => readPreference(INSTALL_DISMISSED_KEY).value === "true"
   );
 
   useEffect(() => {
@@ -598,7 +606,13 @@ function App() {
 
   function handleInstallDismiss() {
     setInstallDismissed(true);
-    localStorage.setItem(INSTALL_DISMISSED_KEY, "true");
+    const result = writePreference(INSTALL_DISMISSED_KEY, "true");
+    if (!result.ok) {
+      showToast(
+        "Install preference could not be saved because on-device storage is unavailable.",
+        "danger"
+      );
+    }
   }
 
   const showInstallBanner =

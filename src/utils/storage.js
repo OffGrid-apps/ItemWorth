@@ -1,4 +1,93 @@
 const STORAGE_KEY = "itemworth.inventory.v1";
+const STORAGE_AVAILABILITY_TEST_KEY = "itemworth.storage.availability-test";
+const STORAGE_AVAILABILITY_TEST_VALUE = "itemworth-storage-available";
+
+function isQuotaError(err) {
+  return (
+    typeof DOMException !== "undefined" &&
+    err instanceof DOMException &&
+    (err.name === "QuotaExceededError" ||
+      err.name === "NS_ERROR_DOM_QUOTA_REACHED")
+  );
+}
+
+/**
+ * Verifies that browser storage can be accessed, written, read, and cleaned up.
+ * Uses only a temporary diagnostic key and never touches ItemWorth data keys.
+ * Returns an explicit result and never throws.
+ */
+export function checkStorageAvailability() {
+  let storage;
+  let result = { ok: false, quota: false };
+
+  try {
+    storage = window.localStorage;
+
+    // Remove a possible value left by an interrupted earlier check.
+    storage.removeItem(STORAGE_AVAILABILITY_TEST_KEY);
+    if (storage.getItem(STORAGE_AVAILABILITY_TEST_KEY) !== null) {
+      return result;
+    }
+
+    storage.setItem(
+      STORAGE_AVAILABILITY_TEST_KEY,
+      STORAGE_AVAILABILITY_TEST_VALUE
+    );
+
+    if (
+      storage.getItem(STORAGE_AVAILABILITY_TEST_KEY) !==
+      STORAGE_AVAILABILITY_TEST_VALUE
+    ) {
+      return result;
+    }
+
+    storage.removeItem(STORAGE_AVAILABILITY_TEST_KEY);
+    if (storage.getItem(STORAGE_AVAILABILITY_TEST_KEY) !== null) {
+      return result;
+    }
+
+    result = { ok: true, quota: false };
+  } catch (err) {
+    result = { ok: false, quota: isQuotaError(err) };
+  } finally {
+    if (!result.ok && storage) {
+      try {
+        storage.removeItem(STORAGE_AVAILABILITY_TEST_KEY);
+      } catch {
+        // The original failure result is authoritative; cleanup is best effort.
+      }
+    }
+  }
+
+  return result;
+}
+
+/**
+ * Safely reads a browser-stored preference without throwing into rendering.
+ */
+export function readPreference(key) {
+  try {
+    return {
+      ok: true,
+      value: window.localStorage.getItem(key),
+      quota: false,
+    };
+  } catch (err) {
+    return { ok: false, value: null, quota: isQuotaError(err) };
+  }
+}
+
+/**
+ * Safely writes a browser-stored preference without hiding failures.
+ */
+export function writePreference(key, value) {
+  try {
+    window.localStorage.setItem(key, value);
+    return { ok: true, quota: false };
+  } catch (err) {
+    return { ok: false, quota: isQuotaError(err) };
+  }
+}
 
 export const CATEGORIES = [
   "Electronics",
@@ -31,11 +120,7 @@ export function saveItems(items) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
     return { ok: true, quota: false };
   } catch (err) {
-    const isQuota =
-      err instanceof DOMException &&
-      (err.name === "QuotaExceededError" ||
-        err.name === "NS_ERROR_DOM_QUOTA_REACHED");
-    return { ok: false, quota: isQuota };
+    return { ok: false, quota: isQuotaError(err) };
   }
 }
 
