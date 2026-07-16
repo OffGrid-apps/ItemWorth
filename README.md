@@ -306,7 +306,7 @@ Every release should satisfy the following requirements:
 
 Current version:
 
-- Version 1.1.1
+- Version 1.2.0
 
 Completed:
 
@@ -323,6 +323,7 @@ Completed:
 - Milestone 5A — Public Deployment
 - Milestone 5B — Public Feedback & Support
 - Maintenance Release v1.1.1 — Browser Storage Availability Fix
+- Milestone 6A — Mobile Backup & Empty-State Restore Access
 
 ---
 

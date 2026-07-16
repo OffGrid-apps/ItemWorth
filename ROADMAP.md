@@ -10,11 +10,11 @@ This roadmap outlines the planned evolution of ItemWorth. It reflects the curren
 
 **Application:** ItemWorth
 
-**Current Version:** v1.1.1
+**Current Version:** v1.2.0
 
-**Development Status:** Public Deployment, Support, and Browser Storage Recovery Complete
+**Development Status:** Public Release and Mobile Data Portability Improvements Complete
 
-**Current Milestone:** v1.1.1 — Browser Storage Availability Fix (Complete)
+**Current Milestone:** 6A — Mobile Backup and Empty-State Restore Access (Complete)
 
 ---
 
@@ -297,6 +297,26 @@ Completed objectives:
 
 ---
 
+## ✅ Milestone 6A — Mobile Backup and Empty-State Restore Access
+
+**Status:** Complete
+
+Improved access to ItemWorth's full-fidelity JSON backup and restore workflows across mobile and empty-inventory states.
+
+Completed objectives:
+
+- Kept full JSON Backup visible and operable at every supported viewport width
+- Added Restore from backup to the existing empty-inventory panel
+- Preserved Import in the populated inventory toolbar
+- Kept empty-state Restore and toolbar Import mutually exclusive
+- Added reusable local JSON file-selection behavior
+- Improved file-picker cancellation and import-trigger focus restoration
+- Corrected initial focus for duplicate-only import previews
+- Preserved storage keys, JSON formats, merge behavior, PWA configuration, and offline operation
+- Verified mobile, empty-state, duplicate-only, and installed-PWA offline workflows on the live deployment
+
+---
+
 # Future Considerations
 
 The following ideas may be evaluated after Version 1.0. They are exploratory and are **not currently scheduled**.
@@ -349,6 +369,7 @@ Incremental improvements are preferred over large-scale rewrites.
 | v1.0.1  | Released  | GitHub Pages & Offline Fixes      |
 | v1.1.0  | Released  | Public Feedback & Support         |
 | v1.1.1  | Released  | Browser Storage Availability Fix  |
+| v1.2.0  | Released  | Mobile Backup & Restore Access     |
 
 ---
 
