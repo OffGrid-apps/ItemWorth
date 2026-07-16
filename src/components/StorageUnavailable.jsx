@@ -1,41 +1,30 @@
 import { useRef, useState } from "react";
-import { checkStorageAvailability } from "../utils/storage";
 
-const BLOCKED_STATUS =
-  "On-device storage is still unavailable. Check the browser setting and try again.";
 const QUOTA_STATUS =
   "On-device storage is unavailable or full. ItemWorth cannot safely start until the browser can complete the storage check.";
 
 function initialStatus(result) {
   if (result?.quota) return QUOTA_STATUS;
-  return "On-device storage is unavailable. Follow the steps below, then try again.";
+  return "On-device storage is unavailable. Follow the steps below, then reload ItemWorth.";
 }
 
-function StorageUnavailable({ initialResult, onStorageAvailable }) {
-  const [checking, setChecking] = useState(false);
+function StorageUnavailable({ initialResult }) {
+  const [reloading, setReloading] = useState(false);
   const [status, setStatus] = useState(() => initialStatus(initialResult));
-  const checkingRef = useRef(false);
+  const reloadingRef = useRef(false);
 
-  async function handleTryAgain() {
-    if (checkingRef.current) return;
+  function handleReload() {
+    if (reloadingRef.current) return;
 
-    checkingRef.current = true;
-    setChecking(true);
-    setStatus("Checking on-device storage…");
+    reloadingRef.current = true;
+    setReloading(true);
+    setStatus("Reloading ItemWorth…");
 
-    // Yield once so the checking state is visible and announced before the
-    // synchronous storage test runs.
-    await new Promise((resolve) => window.setTimeout(resolve, 0));
-
-    const result = checkStorageAvailability();
-    if (result.ok) {
-      onStorageAvailable();
-      return;
-    }
-
-    setStatus(result.quota ? QUOTA_STATUS : BLOCKED_STATUS);
-    checkingRef.current = false;
-    setChecking(false);
+    // Yield once so the reloading state can render and be announced before
+    // the browser creates a new document and reruns the startup storage check.
+    window.setTimeout(() => {
+      window.location.reload();
+    }, 0);
   }
 
   return (
@@ -43,7 +32,7 @@ function StorageUnavailable({ initialResult, onStorageAvailable }) {
       <section
         className="storage-recovery__card"
         aria-labelledby="storage-recovery-title"
-        aria-busy={checking}
+        aria-busy={reloading}
       >
         <p className="storage-recovery__eyebrow">ItemWorth</p>
         <h1 id="storage-recovery-title" className="storage-recovery__title">
@@ -78,7 +67,7 @@ function StorageUnavailable({ initialResult, onStorageAvailable }) {
             <li>Open On-device site data.</li>
             <li>Select “Allow sites to save data on your device.”</li>
             <li>Return to ItemWorth.</li>
-            <li>Tap “Try again.”</li>
+            <li>Tap “Reload ItemWorth.”</li>
           </ol>
         </div>
 
@@ -100,10 +89,10 @@ function StorageUnavailable({ initialResult, onStorageAvailable }) {
           <button
             type="button"
             className="btn btn-primary storage-recovery__button"
-            onClick={handleTryAgain}
-            disabled={checking}
+            onClick={handleReload}
+            disabled={reloading}
           >
-            {checking ? "Checking…" : "Try again"}
+            {reloading ? "Reloading…" : "Reload ItemWorth"}
           </button>
         </div>
       </section>

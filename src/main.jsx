@@ -19,10 +19,7 @@ function renderApp() {
 function renderStorageUnavailable(result) {
   root.render(
     <StrictMode>
-      <StorageUnavailable
-        initialResult={result}
-        onStorageAvailable={renderApp}
-      />
+      <StorageUnavailable initialResult={result} />
     </StrictMode>,
   )
 }
