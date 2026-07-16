@@ -306,7 +306,7 @@ Every release should satisfy the following requirements:
 
 Current version:
 
-- Version 1.1.0
+- Version 1.1.1
 
 Completed:
 
@@ -322,6 +322,7 @@ Completed:
 - Milestone 4C — Final Polish & Version 1.0
 - Milestone 5A — Public Deployment
 - Milestone 5B — Public Feedback & Support
+- Maintenance Release v1.1.1 — Browser Storage Availability Fix
 
 ---
 

@@ -10,11 +10,11 @@ This roadmap outlines the planned evolution of ItemWorth. It reflects the curren
 
 **Application:** ItemWorth
 
-**Current Version:** v1.1.0
+**Current Version:** v1.1.1
 
-**Development Status:** Public Deployment and Support Complete
+**Development Status:** Public Deployment, Support, and Browser Storage Recovery Complete
 
-**Current Milestone:** 5B — Public Feedback and Support (Complete)
+**Current Milestone:** v1.1.1 — Browser Storage Availability Fix (Complete)
 
 ---
 
@@ -278,6 +278,25 @@ Completed objectives:
 
 ---
 
+## ✅ v1.1.1 — Browser Storage Availability Fix
+
+**Status:** Complete
+
+Corrected a production startup defect discovered through real-user testing.
+
+Completed objectives:
+
+- Prevented a blank white screen when browser storage is blocked or unavailable
+- Added a pre-start browser-storage availability check
+- Added an accessible storage-recovery screen
+- Added clear Chrome Android recovery instructions
+- Protected welcome and install preference storage operations
+- Replaced unreliable same-document retry behavior with full-document reload recovery
+- Preserved existing inventory, backups, PWA configuration, and offline behavior
+- Verified the correction on a Moto G 5G (2024) running Android 15 and Chrome 149.0.7827.200
+
+---
+
 # Future Considerations
 
 The following ideas may be evaluated after Version 1.0. They are exploratory and are **not currently scheduled**.
@@ -329,6 +348,7 @@ Incremental improvements are preferred over large-scale rewrites.
 | v1.0.0  | Released  | Version 1.0 Release              |
 | v1.0.1  | Released  | GitHub Pages & Offline Fixes      |
 | v1.1.0  | Released  | Public Feedback & Support         |
+| v1.1.1  | Released  | Browser Storage Availability Fix  |
 
 ---
 
