@@ -33,6 +33,8 @@ function useToast() {
 }
 
 /* ── Focus trap for modal dialogs ────────────────────────── */
+const IMPORT_TRIGGER_SELECTOR = '[data-json-restore-trigger="true"]';
+
 const FOCUSABLE = [
   'a[href]',
   'button:not([disabled])',
@@ -418,23 +420,22 @@ function DeleteDialog({ itemName, onConfirm, onCancel }) {
 
 /* ── Import Preview Dialog ───────────────────────────────── */
 function ImportDialog({ preview, onConfirm, onCancel }) {
+  const { totalCount, addedCount, skippedCount } = preview;
+  const cancelRef    = useRef(null);
   const confirmRef   = useRef(null);
   const containerRef = useRef(null);
 
   useFocusTrap(containerRef, true);
 
   useEffect(() => {
-    // Focus the confirm button when there are items to add,
-    // otherwise focus Cancel so the user doesn't accidentally confirm a no-op.
-    confirmRef.current?.focus();
+    const initialFocusRef = addedCount > 0 ? confirmRef : cancelRef;
+    initialFocusRef.current?.focus();
     const handleKey = (e) => {
       if (e.key === "Escape") onCancel();
     };
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
-  }, [onCancel]);
-
-  const { totalCount, addedCount, skippedCount } = preview;
+  }, [addedCount, onCancel]);
 
   return (
     <div
@@ -481,6 +482,7 @@ function ImportDialog({ preview, onConfirm, onCancel }) {
 
         <div className="dialog__actions">
           <button
+            ref={cancelRef}
             type="button"
             className="btn btn-secondary"
             onClick={onCancel}
@@ -537,8 +539,23 @@ function App() {
   const [loaded, setLoaded]               = useState(false);
   const { toasts, show: showToast }       = useToast();
 
-  // Ref to restore focus when a dialog closes
-  const dialogTriggerRef = useRef(null);
+  // Refs to restore focus when dialogs and import workflows close
+  const dialogTriggerRef       = useRef(null);
+  const importTriggerRef       = useRef(null);
+  const importFocusPendingRef  = useRef(false);
+
+  useEffect(() => {
+    if (!importFocusPendingRef.current || importPreview) return;
+
+    importFocusPendingRef.current = false;
+    const storedTrigger = importTriggerRef.current;
+    const focusTarget = storedTrigger?.isConnected
+      ? storedTrigger
+      : document.querySelector(IMPORT_TRIGGER_SELECTOR);
+
+    focusTarget?.focus();
+    importTriggerRef.current = null;
+  }, [importPreview, items.length]);
 
   // ── Onboarding ───────────────────────────────────────────
   // Welcome panel is shown once to new users when the inventory is empty.
@@ -780,27 +797,37 @@ function App() {
   }
 
   /* ── Import ── */
-  function handleImportFile(file) {
+  function restoreImportTriggerFocus() {
+    const trigger = importTriggerRef.current;
+    if (trigger?.isConnected) trigger.focus();
+    importTriggerRef.current = null;
+  }
+
+  function handleImportFile(file, triggerElement) {
     setImportError("");
+    importTriggerRef.current = triggerElement;
 
-    if (!file) return;
-
-    if (!file.name.toLowerCase().endsWith(".json")) {
-      setImportError("Please select a JSON backup file (.json).");
+    if (!file) {
+      restoreImportTriggerFocus();
       return;
     }
 
-    dialogTriggerRef.current = document.activeElement;
+    if (!file.name.toLowerCase().endsWith(".json")) {
+      setImportError("Please select a JSON backup file (.json).");
+      restoreImportTriggerFocus();
+      return;
+    }
 
     const reader = new FileReader();
 
-    reader.onload = (e) => {
+    reader.onload = (event) => {
       try {
-        const parsed = JSON.parse(e.target.result);
+        const parsed = JSON.parse(event.target.result);
         const result = validateImport(parsed);
 
         if (!result.valid) {
           setImportError(result.error);
+          restoreImportTriggerFocus();
           return;
         }
 
@@ -819,11 +846,13 @@ function App() {
         setImportError(
           "The file could not be read. Make sure it is a valid JSON backup."
         );
+        restoreImportTriggerFocus();
       }
     };
 
     reader.onerror = () => {
       setImportError("The file could not be opened. Please try again.");
+      restoreImportTriggerFocus();
     };
 
     reader.readAsText(file);
@@ -832,21 +861,19 @@ function App() {
   function confirmImport() {
     if (!importPreview) return;
     const { mergedItems, addedCount } = importPreview;
+    importFocusPendingRef.current = true;
     setItems(mergedItems);
     setImportPreview(null);
     showToast(
       `${addedCount} item${addedCount !== 1 ? "s" : ""} imported successfully.`,
       "success"
     );
-    try { dialogTriggerRef.current?.focus(); } catch {}
-    dialogTriggerRef.current = null;
   }
 
   function cancelImport() {
+    importFocusPendingRef.current = true;
     setImportPreview(null);
     setImportError("");
-    try { dialogTriggerRef.current?.focus(); } catch {}
-    dialogTriggerRef.current = null;
   }
 
   return (

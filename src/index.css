@@ -778,6 +778,25 @@ h3 { font-size: var(--text-lg); }
   line-height: var(--leading-loose);
 }
 
+.empty-state__actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+}
+
+@media (max-width: 480px) {
+  .empty-state__actions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .empty-state__actions .btn {
+    width: 100%;
+  }
+}
+
 /* --- Item Grid --- */
 .item-list {
   display: flex;
@@ -1246,13 +1265,9 @@ h3 { font-size: var(--text-lg); }
   box-shadow: 0 0 0 3px rgba(29, 79, 145, 0.12);
 }
 
-/* --- Button text labels — hidden at very small widths --- */
+/* --- Toolbar button text labels remain visible at all widths --- */
 .inv-btn-label {
   display: inline;
-}
-
-@media (max-width: 400px) {
-  .inv-btn-label { display: none; }
 }
 
 /* --- Category filter chips --- */
@@ -1356,12 +1371,41 @@ h3 { font-size: var(--text-lg); }
   padding: var(--sp-8) var(--sp-6);
 }
 
-/* --- Responsive collapse --- */
+/* --- Responsive toolbar reflow --- */
+@media (max-width: 720px) {
+  .inv-toolbar__top {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .inv-search {
+    width: 100%;
+    flex: none;
+  }
+
+  .inv-toolbar__right {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--sp-2);
+  }
+
+  .inv-sort {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  .inv-toolbar__right .btn {
+    width: 100%;
+    min-width: 0;
+    padding-inline: 12px;
+  }
+}
+
 @media (max-width: 520px) {
-  .inv-toolbar__top { flex-wrap: wrap; }
-  .inv-search { width: 100%; flex: unset; }
-  .inv-toolbar__right { width: 100%; justify-content: space-between; }
-  .inv-sort { flex: 1; }
+  .inv-toolbar__right {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 /* ==========================================================
@@ -1443,12 +1487,8 @@ h3 { font-size: var(--text-lg); }
   line-height: var(--leading-loose);
 }
 
-/* --- Backup button: hidden on narrow mobile where space is critical --- */
+/* --- Full JSON backup remains available at every supported width --- */
 .inv-backup-btn { display: inline-flex; }
-
-@media (max-width: 600px) {
-  .inv-backup-btn { display: none; }
-}
 
 /* --- Disabled state for the primary button (e.g. "Nothing to add") --- */
 .btn-primary:disabled,

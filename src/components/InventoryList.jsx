@@ -1,4 +1,4 @@
-import { useRef, useMemo, useState } from "react";
+import { useEffect, useRef, useMemo, useState } from "react";
 import { CATEGORIES, exportJSON } from "../utils/storage";
 
 /* ── Icons ───────────────────────────────────────────────── */
@@ -371,8 +371,116 @@ function ItemCard({ item, onEdit, onDelete }) {
   );
 }
 
+/* ── JSON restore control ────────────────────────────────── */
+function JsonRestoreControl({
+  onImportFile,
+  visibleLabel,
+  accessibleLabel,
+  title,
+  className = "",
+  labelClassName = "",
+}) {
+  const fileInputRef          = useRef(null);
+  const triggerRef            = useRef(null);
+  const pickerOpenRef         = useRef(false);
+  const windowFocusHandlerRef = useRef(null);
+
+  useEffect(() => {
+    return () => {
+      if (windowFocusHandlerRef.current) {
+        window.removeEventListener("focus", windowFocusHandlerRef.current);
+      }
+    };
+  }, []);
+
+  function clearWindowFocusFallback() {
+    if (!windowFocusHandlerRef.current) return;
+    window.removeEventListener("focus", windowFocusHandlerRef.current);
+    windowFocusHandlerRef.current = null;
+  }
+
+  function resetInput() {
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  }
+
+  function restoreTriggerFocus() {
+    triggerRef.current?.focus();
+  }
+
+  function finishWithoutSelection() {
+    if (!pickerOpenRef.current) return;
+    pickerOpenRef.current = false;
+    clearWindowFocusFallback();
+    resetInput();
+    restoreTriggerFocus();
+  }
+
+  function openFilePicker() {
+    const input = fileInputRef.current;
+    if (!input) return;
+
+    resetInput();
+    pickerOpenRef.current = true;
+    clearWindowFocusFallback();
+
+    const handleWindowFocus = () => {
+      windowFocusHandlerRef.current = null;
+      window.requestAnimationFrame(() => {
+        if (pickerOpenRef.current && !fileInputRef.current?.files?.length) {
+          finishWithoutSelection();
+        }
+      });
+    };
+
+    windowFocusHandlerRef.current = handleWindowFocus;
+    window.addEventListener("focus", handleWindowFocus, { once: true });
+    input.click();
+  }
+
+  function handleFileChange(event) {
+    const file = event.currentTarget.files?.[0];
+    pickerOpenRef.current = false;
+    clearWindowFocusFallback();
+    event.currentTarget.value = "";
+
+    if (!file) {
+      restoreTriggerFocus();
+      return;
+    }
+
+    onImportFile(file, triggerRef.current);
+  }
+
+  return (
+    <>
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".json"
+        className="sr-only"
+        tabIndex={-1}
+        aria-label="Select an ItemWorth JSON backup file"
+        onChange={handleFileChange}
+        onCancel={finishWithoutSelection}
+      />
+      <button
+        ref={triggerRef}
+        type="button"
+        className={`btn btn-secondary ${className}`.trim()}
+        onClick={openFilePicker}
+        aria-label={accessibleLabel}
+        title={title}
+        data-json-restore-trigger="true"
+      >
+        <UploadIcon />
+        <span className={labelClassName}>{visibleLabel}</span>
+      </button>
+    </>
+  );
+}
+
 /* ── Empty States ────────────────────────────────────────── */
-function EmptyInventory({ onAdd }) {
+function EmptyInventory({ onAdd, onImportFile }) {
   return (
     <div className="empty-state">
       <div className="empty-state__icon">
@@ -380,17 +488,25 @@ function EmptyInventory({ onAdd }) {
       </div>
       <p className="empty-state__title">Your inventory is empty</p>
       <p className="empty-state__body">
-        Start tracking your belongings by adding your first item.
+        Add your first item or restore an existing ItemWorth JSON backup.
       </p>
-      <button type="button" className="btn btn-primary" onClick={onAdd}>
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"
-          strokeLinejoin="round" aria-hidden="true">
-          <line x1="12" y1="5" x2="12" y2="19" />
-          <line x1="5" y1="12" x2="19" y2="12" />
-        </svg>
-        Add your first item
-      </button>
+      <div className="empty-state__actions">
+        <button type="button" className="btn btn-primary" onClick={onAdd}>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"
+            strokeLinejoin="round" aria-hidden="true">
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+          Add your first item
+        </button>
+        <JsonRestoreControl
+          onImportFile={onImportFile}
+          visibleLabel="Restore from backup"
+          accessibleLabel="Restore inventory from an ItemWorth JSON backup file"
+          title="Restore from ItemWorth JSON backup"
+        />
+      </div>
     </div>
   );
 }
@@ -432,16 +548,8 @@ function InventoryToolbar({
   groupByLocation,
   onToggleGroup,
 }) {
-  const fileInputRef = useRef(null);
-  const hasFilters   = query.trim() !== "" || activeCategory !== "All" || activeTag !== "";
-  const isFiltered   = visibleCount < totalItems;
-
-  function handleFileChange(e) {
-    const file = e.target.files?.[0];
-    if (file) onImportFile(file);
-    // Reset so the same file can be re-selected after an error dismissal
-    e.target.value = "";
-  }
+  const hasFilters = query.trim() !== "" || activeCategory !== "All" || activeTag !== "";
+  const isFiltered = visibleCount < totalItems;
 
   function clearAll() {
     onQueryChange("");
@@ -523,8 +631,6 @@ function InventoryToolbar({
           {/*
             JSON backup — always exports the full unfiltered inventory,
             regardless of active search or category filter.
-            Hidden on very small screens where space is critical;
-            users can clear filters and use CSV, or access on desktop.
           */}
           <button
             type="button"
@@ -537,26 +643,13 @@ function InventoryToolbar({
             <span className="inv-btn-label">Backup</span>
           </button>
 
-          {/* Hidden file input — triggered by the Import button below */}
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept=".json"
-            className="sr-only"
-            aria-label="Select JSON backup file to import"
-            onChange={handleFileChange}
-          />
-
-          <button
-            type="button"
-            className="btn btn-secondary"
-            onClick={() => fileInputRef.current?.click()}
-            aria-label="Import inventory from a JSON backup file"
+          <JsonRestoreControl
+            onImportFile={onImportFile}
+            visibleLabel="Import"
+            accessibleLabel="Import inventory from an ItemWorth JSON backup file"
             title="Import from JSON backup"
-          >
-            <UploadIcon />
-            <span className="inv-btn-label">Import</span>
-          </button>
+            labelClassName="inv-btn-label"
+          />
 
           {/* Group by location toggle */}
           <button
@@ -739,7 +832,7 @@ function InventoryList({ items, onEdit, onDelete, onAdd, onImportFile }) {
   if (items.length === 0) {
     return (
       <section className="inventory-section" aria-label="Inventory">
-        <EmptyInventory onAdd={onAdd} />
+        <EmptyInventory onAdd={onAdd} onImportFile={onImportFile} />
       </section>
     );
   }
