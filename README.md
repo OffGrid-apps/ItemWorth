@@ -1,29 +1,261 @@
 # ItemWorth
 
-> **An offline-first Progressive Web App for organizing, tracking, and valuing personal belongings.**
+> **A private, offline-first home inventory app for organizing, documenting, and estimating the value of personal belongings.**
 
-ItemWorth is a production-quality inventory management application designed to help users document, organize, and estimate the value of their possessions for personal organization, insurance documentation, moving, estate planning, and asset management.
+## Try ItemWorth
 
-The application is intentionally built around a simple philosophy:
+### **[Launch the live app](https://offgrid-apps.github.io/ItemWorth/)**
 
-- Your data stays on your device.
-- The application works without an Internet connection.
-- The codebase remains small, maintainable, and easy to evolve.
+**No account · No subscription · No cloud database · Works offline**
+
+[![ItemWorth inventory dashboard](screenshots/dashboard.jpg)](https://offgrid-apps.github.io/ItemWorth/)
+
+ItemWorth helps people create a dependable record of their belongings for personal organization, insurance documentation, moving preparation, estate planning, and general asset management.
+
+Inventory information is stored locally in the browser rather than being sent to an ItemWorth server.
+
+## Why ItemWorth
+
+- Works without an Internet connection after the app has loaded or been installed
+- Requires no account or subscription
+- Uses no backend, remote database, or cloud inventory service
+- Stores inventory data locally in the browser
+- Supports detailed item records and photos
+- Provides JSON backup and restoration
+- Provides CSV export
+- Is installable as a Progressive Web App
+- Is designed for mobile use and accessibility
+- Uses a color-blind-friendly visual system
+
+**Start immediately without registering or providing personal information.**
+
+[Launch ItemWorth](https://offgrid-apps.github.io/ItemWorth/) ·
+[View releases](https://github.com/OffGrid-apps/ItemWorth/releases) ·
+[Report a problem](https://github.com/OffGrid-apps/ItemWorth/issues/new?template=bug_report.yml) ·
+[Suggest an improvement](https://github.com/OffGrid-apps/ItemWorth/issues/new?template=feature_request.yml)
 
 ---
 
-# Vision
+## Important Data Notice
 
-ItemWorth aims to provide a dependable, privacy-focused inventory solution that is fast, intuitive, and accessible without requiring accounts, subscriptions, cloud storage, or servers.
+ItemWorth stores inventory data in the current browser profile using `localStorage`.
 
-The project prioritizes long-term stability over feature bloat.
+Clearing browser data, resetting the browser, uninstalling the browser, changing devices, or losing access to the current browser profile may remove locally stored inventory information.
+
+**Create regular JSON backups and keep those backup files in a safe location.**
+
+ItemWorth does not automatically synchronize information between devices.
 
 ---
 
-# Core Principles
+## Screenshots
+
+### Inventory Dashboard
+
+![ItemWorth inventory dashboard](screenshots/dashboard.jpg)
+
+The dashboard provides a clear overview of the inventory, including item count, estimated total value, search, sorting, backup, restoration, export, and grouping controls.
+
+### Add New Item
+
+![ItemWorth add-item form](screenshots/add-item.jpg)
+
+Create detailed inventory records with categories, quantities, estimated values, conditions, serial numbers, purchase dates, locations, notes, tags, and photos.
+
+---
+
+## Core Features
+
+### Inventory Management
+
+- Add inventory items
+- Edit existing items
+- Delete items with confirmation
+- Organize items by category
+- Record storage locations
+- Track quantities
+- Record estimated values
+- Add notes
+- View total item count
+- View estimated total inventory value
+
+### Detailed Item Records
+
+- Item name
+- Category
+- Location
+- Quantity
+- Estimated value
+- Serial number
+- Purchase date
+- Condition
+- Notes
+- Tags
+- Item photo
+- Created date
+- Expandable item details
+
+### Search and Organization
+
+- Search inventory records
+- Filter by category
+- Sort inventory
+- Group items
+- View dashboard statistics
+- Track running inventory totals
+- View empty and no-results states
+
+### Backup and Export
+
+- Export a complete JSON backup
+- Preserve item identifiers and supported item fields
+- Restore inventory from a JSON backup
+- Access restoration when the inventory is empty
+- Export inventory data as CSV
+- Maintain compatibility with earlier supported inventory records
+
+### Progressive Web App
+
+- Installable on supported devices and browsers
+- Offline operation
+- Service Worker support
+- Cached application resources
+- Update notifications
+- Mobile-oriented interface
+
+### Reliability
+
+- Storage availability checking
+- Recovery screen when browser storage is blocked
+- Storage-quota error handling
+- Protection against uncaught storage failures
+- Clear user-facing status messages
+- Backward-compatible inventory loading
+
+---
+
+## Typical Uses
+
+ItemWorth can help with:
+
+- Home inventory documentation
+- Personal organization
+- Insurance preparation
+- Moving preparation
+- Estate planning
+- Asset tracking
+- Storage organization
+- Recording serial numbers
+- Documenting item condition
+- Maintaining replacement-value estimates
+
+ItemWorth does not provide professional appraisals, insurance coverage decisions, or legal valuations. Estimated values are entered and maintained by the user.
+
+---
+
+## Getting Started
+
+1. Open the [ItemWorth live app](https://offgrid-apps.github.io/ItemWorth/).
+2. Select **Add Item**.
+3. Enter the information you want to preserve.
+4. Save the item.
+5. Repeat for additional belongings.
+6. Use search, categories, sorting, and grouping to organize the inventory.
+7. Select **Backup** to create a JSON backup.
+8. Store the backup file somewhere safe.
+
+No account setup is required.
+
+---
+
+## Installing ItemWorth
+
+ItemWorth can be installed as a Progressive Web App on supported browsers.
+
+1. Open the [live app](https://offgrid-apps.github.io/ItemWorth/).
+2. Open the browser menu.
+3. Select **Install app**, **Add to Home screen**, or the equivalent option shown by the browser.
+4. Confirm the installation.
+
+The exact wording depends on the device and browser.
+
+After installation, ItemWorth can be opened from the device home screen and used offline.
+
+---
+
+## Privacy
+
+ItemWorth is intentionally client-only.
+
+The application does not require:
+
+- A user account
+- Authentication
+- A subscription
+- A backend server
+- A remote inventory database
+- Cloud storage
+- Environment variables
+- An Internet connection for normal inventory management after loading
+
+Inventory information remains in the current browser profile unless the user deliberately exports, copies, shares, or removes it.
+
+Because GitHub Issues are public, never include private inventory information in a bug report or feature request.
+
+Do not publicly post:
+
+- JSON backup files
+- Complete inventory lists
+- Serial numbers
+- Receipts
+- Exact storage locations
+- Home addresses
+- Private photographs
+- Sensitive notes
+- Other personally identifying information
+
+---
+
+## Feedback and Support
+
+ItemWorth uses GitHub Issues for structured bug reports and feature requests.
+
+Submitting an issue requires an Internet connection and a GitHub account.
+
+- **[Report a problem](https://github.com/OffGrid-apps/ItemWorth/issues/new?template=bug_report.yml)**
+- **[Suggest an improvement](https://github.com/OffGrid-apps/ItemWorth/issues/new?template=feature_request.yml)**
+- **[View existing issues](https://github.com/OffGrid-apps/ItemWorth/issues)**
+- **[View releases](https://github.com/OffGrid-apps/ItemWorth/releases)**
+- **[Open the live app](https://offgrid-apps.github.io/ItemWorth/)**
+
+For installation, offline, storage, or data-persistence problems, include:
+
+- Device model
+- Operating-system version
+- Browser name and version
+- Whether ItemWorth was installed
+- Whether the problem occurs online, offline, or both
+- Clear reproduction steps
+- The expected result
+- The actual result
+
+Do not attach private inventory data.
+
+---
+
+## Vision
+
+ItemWorth aims to provide a dependable, privacy-focused inventory solution that is fast, intuitive, accessible, and maintainable without requiring accounts, subscriptions, cloud storage, or servers.
+
+The project prioritizes long-term stability, data portability, and practical usefulness over unnecessary feature growth.
+
+---
+
+## Core Principles
 
 - Offline-first
 - Privacy-first
+- Local-first
 - Mobile-first
 - Accessibility-first
 - Color-blind friendly
@@ -31,133 +263,126 @@ The project prioritizes long-term stability over feature bloat.
 - Fast
 - Reliable
 - Maintainable
+- Backward compatible
+- Incrementally developed
 
-Every design and engineering decision should reinforce these principles.
-
-
-## Live Demo
-
-Try ItemWorth online or install it as a Progressive Web App.
-
-➡️ **[Launch ItemWorth](https://offgrid-apps.github.io/ItemWorth/)**
-
-## Screenshots
-
-### Dashboard
-
-![ItemWorth Dashboard](screenshots/dashboard.jpg)
-
-The main dashboard provides a clear overview of your inventory, including search, filtering, categories, item counts, and estimated total value.
-
-### Add New Item
-
-![Add New Item](screenshots/add-item.jpg)
-
-Create detailed inventory records with categories, values, conditions, serial numbers, purchase dates, locations, notes, and photos.
+Every product and engineering decision should reinforce these principles.
 
 ---
 
-# Features
+## Technology Stack
 
-## Inventory Management
-
-- Add, edit, and delete inventory items
-- Organize items by category
-- Assign storage locations
-- Track quantities
-- Record estimated values
-- Store notes
-
-## Rich Item Information
-
-- Serial numbers
-- Purchase dates
-- Condition tracking
-- Item photos
-- Expandable item details
-
-## Organization
-
-- Search
-- Filtering
-- Sorting
-- Dashboard statistics
-- Running inventory totals
-
-## Data Protection
-
-- JSON backup
-- JSON restore
-- CSV export
-- Backward-compatible data model
-
-## Progressive Web App
-
-- Installable
-- Offline operation
-- Service Worker support
-- Update notifications
-
----
-
-# Feedback and Support
-
-ItemWorth uses GitHub Issues for structured bug reports and feature requests.
-Submitting an issue requires an Internet connection and a GitHub account.
-
-- **[Report a problem](https://github.com/OffGrid-apps/ItemWorth/issues/new?template=bug_report.yml)**
-- **[Suggest an improvement](https://github.com/OffGrid-apps/ItemWorth/issues/new?template=feature_request.yml)**
-- **[View existing issues](https://github.com/OffGrid-apps/ItemWorth/issues)**
-- **[Open the live app](https://offgrid-apps.github.io/ItemWorth/)**
-
-For installation, PWA, offline, or data-persistence problems, include your device,
-operating system, browser version, whether ItemWorth was installed, and whether
-the issue occurs online, offline, or both.
-
-> **Protect your privacy:** Never post JSON backup files, complete inventory lists,
-> serial numbers, receipts, exact storage locations, private photos, addresses, or
-> other sensitive personal information in a public issue.
-
----
-
-# Technology Stack
-
-ItemWorth intentionally uses a minimal technology stack.
+ItemWorth intentionally uses a small technology stack:
 
 - React 19
 - Vite 8
-- JavaScript (ES Modules)
-- vite-plugin-pwa
+- JavaScript with ES modules
+- `vite-plugin-pwa`
+- Workbox
 - HTML5
 - CSS3
 
 Persistent storage:
 
-- localStorage
+- Browser `localStorage`
+
+Current inventory storage key:
+
+```text
+itemworth.inventory.v1
+```
 
 ---
 
-# Architecture
+## Architecture
 
-ItemWorth is intentionally client-only.
+ItemWorth is a client-side React application.
 
 There is:
 
 - No backend
-- No server
-- No database
-- No authentication
-- No cloud storage
-- No APIs
-- No environment variables
+- No application server
+- No remote database
+- No authentication system
+- No cloud inventory storage
+- No required external application API
+- No environment-variable configuration
 
-Every feature operates entirely within the browser.
+Inventory operations take place in the browser.
+
+The application architecture is intentionally small to reduce maintenance requirements, deployment complexity, and long-term failure points.
 
 ---
 
-# Design Philosophy
+## Accessibility
 
-The project favors simplicity over complexity.
+Accessibility is a core project requirement.
+
+The interface aims to provide:
+
+- Semantic HTML
+- Native controls where appropriate
+- Keyboard-accessible interactions
+- Screen-reader-conscious labels and status messages
+- Visible focus states
+- Large touch targets
+- Responsive mobile layouts
+- Reduced-motion support
+- Color-blind-friendly visual distinctions
+- Information that does not rely exclusively on color
+
+Accessibility is reviewed as part of feature development and release verification.
+
+---
+
+## Offline Philosophy
+
+Offline capability is fundamental to ItemWorth.
+
+After the application has loaded or been installed, users should be able to:
+
+- View inventory
+- Search inventory
+- Filter inventory
+- Sort inventory
+- Group inventory
+- Add items
+- Edit items
+- Delete items
+- Export JSON backups
+- Restore JSON backups
+- Export CSV files
+
+without an active Internet connection.
+
+Internet access is still required for external services such as GitHub Issues and for receiving newly deployed application versions.
+
+---
+
+## Data Storage and Compatibility
+
+ItemWorth currently stores inventory data in browser `localStorage`.
+
+The application uses:
+
+```text
+itemworth.inventory.v1
+```
+
+New releases should preserve existing inventory records and supported JSON backups whenever reasonably possible.
+
+Storage-related development must avoid:
+
+- Silently discarding valid inventory data
+- Replacing stored data after an unsuccessful load
+- Breaking supported backup formats without a migration path
+- Allowing storage failures to produce an unexplained blank screen
+
+---
+
+## Design Philosophy
+
+The project favors clarity and reliability over unnecessary complexity.
 
 When multiple implementation approaches exist, prefer the solution that is:
 
@@ -165,201 +390,160 @@ When multiple implementation approaches exist, prefer the solution that is:
 - Easier to understand
 - Easier to maintain
 - Easier to test
-- Easier to extend
+- Easier to verify
+- Easier to extend safely
+- Consistent with the existing architecture
 
-Avoid unnecessary abstraction.
+Avoid unnecessary:
 
-Avoid unnecessary dependencies.
+- Dependencies
+- Abstraction
+- Configuration
+- Refactoring
+- State complexity
+- Architectural rewrites
 
-Avoid unnecessary refactoring.
-
-Incremental improvement is preferred over large rewrites.
+Incremental improvement is preferred over large, high-risk changes.
 
 ---
 
-# Development Workflow
+## Development Workflow
 
-Every milestone follows the same engineering process.
+Each planned milestone follows a controlled engineering process.
 
-## Before implementation
+### Before Implementation
 
-- Read the complete source.
-- Treat the uploaded source as the authoritative codebase.
-- Analyze the entire repository.
-- Identify every affected file.
-- Explain why each file changes.
-- Evaluate:
-  - Risks
-  - Edge cases
-  - Trade-offs
-  - Accessibility
-  - Performance
-  - Storage implications
-  - Browser compatibility
-  - Offline behavior
-  - Backward compatibility
-- Obtain approval before writing code.
+- Read the complete current source
+- Treat the approved repository version as the source of truth
+- Analyze all affected behavior
+- Identify every file that must change
+- Explain why each file is affected
+- Evaluate risks and edge cases
+- Review accessibility effects
+- Review storage implications
+- Review browser compatibility
+- Review offline behavior
+- Review backward compatibility
+- Obtain approval before implementation
 
-## During implementation
+### During Implementation
 
-- Implement only the approved milestone.
-- Make the smallest possible incremental change.
-- Preserve the existing architecture.
-- Preserve coding style.
-- Preserve formatting.
-- Preserve naming conventions.
-- Preserve component structure.
-- Preserve storage compatibility.
-- Preserve design language.
-- Preserve accessibility.
-- Avoid unrelated changes.
+- Implement only the approved scope
+- Make the smallest clean incremental change
+- Preserve the existing architecture
+- Preserve established naming conventions
+- Preserve component structure
+- Preserve storage compatibility
+- Preserve the visual design language
+- Preserve accessibility behavior
+- Avoid unrelated modifications
 
-## Before delivery
+### Before Delivery
 
 Verify:
 
 - Production build succeeds
-- No regressions
-- No unrelated modifications
-- Existing functionality remains intact
-- Existing inventories remain compatible
-- Existing JSON backups remain compatible
+- No unexpected console errors are introduced
+- Existing inventory behavior remains functional
+- Existing stored inventories remain compatible
+- Supported JSON backups remain compatible
+- Responsive layouts remain usable
+- Offline functionality remains operational
+- No unrelated files were modified
 
-Deliver:
+Document:
 
 - Implementation summary
-- Modified file list
+- Modified-file list
 - Regression assessment
 - Manual testing checklist
-- ZIP containing only modified files
+- Release or packaging instructions when applicable
 
 ---
 
-# Accessibility
+## Quality Standards
 
-Accessibility is a core requirement.
-
-The project aims to provide:
-
-- WCAG-conscious interfaces
-- Color-blind friendly design
-- Screen reader compatibility
-- Native controls where appropriate
-- Large touch targets
-- Keyboard accessibility
-- Reduced motion support
-
-Accessibility should never be treated as an afterthought.
-
----
-
-# Offline Philosophy
-
-Offline capability is fundamental.
-
-Users should always be able to:
-
-- View inventory
-- Search inventory
-- Filter inventory
-- Add items
-- Edit items
-- Delete items
-- Export backups
-- Restore backups
-
-without an Internet connection.
-
----
-
-# Data Storage
-
-Current storage mechanism:
-
-- localStorage
-
-Current storage key:
-
-```
-itemworth.inventory.v1
-```
-
-Future updates should preserve backward compatibility whenever reasonably possible.
-
----
-
-# Quality Standards
-
-Every release should satisfy the following requirements:
+Each release should satisfy the following requirements:
 
 - Production build passes
-- No console errors
-- No regressions
-- Backward compatibility maintained
-- Accessibility reviewed
-- Responsive layout verified
-- Offline functionality verified
+- No known blocking regression
+- Existing inventory compatibility is maintained
+- Supported backup compatibility is maintained
+- Accessibility is reviewed
+- Responsive layouts are verified
+- Offline functionality is verified
+- Storage behavior is verified
+- Public documentation is updated when necessary
+- Changes remain narrowly scoped
 
 ---
 
-# Current Roadmap
+## Current Status
 
-Current version:
+Current release:
 
-- Version 1.2.0
+- **Version 1.2.0**
 
-Completed:
+Completed work:
 
 - Milestone 1 — Foundation
 - Milestone 2A — Inventory Management
-- Milestone 2B — Backup & Restore
+- Milestone 2B — Backup and Restore
 - Milestone 2C — Progressive Web App
 - Milestone 3A — First-Run Experience
 - Milestone 3B — Rich Item Information
 - Milestone 3C — Organization Enhancements
 - Milestone 4A — Accessibility Review
-- Milestone 4B — Performance & Reliability
-- Milestone 4C — Final Polish & Version 1.0
+- Milestone 4B — Performance and Reliability
+- Milestone 4C — Final Polish and Version 1.0
 - Milestone 5A — Public Deployment
-- Milestone 5B — Public Feedback & Support
+- Milestone 5B — Public Feedback and Support
 - Maintenance Release v1.1.1 — Browser Storage Availability Fix
-- Milestone 6A — Mobile Backup & Empty-State Restore Access
+- Milestone 6A — Mobile Backup and Empty-State Restore Access
+
+See the repository releases for published version details:
+
+**[View ItemWorth releases](https://github.com/OffGrid-apps/ItemWorth/releases)**
 
 ---
 
-# Development Environment
+## Development Environment
 
-Primary development platform:
+ItemWorth is independently developed using:
 
 - Android
 - Termux
 - Git
 - GitHub
 
-The project is intentionally developed without requiring a desktop operating system.
+The project is intentionally maintained without requiring a desktop operating system.
 
 ---
 
-# Repository Standards
+## Repository Standards
 
-Contributors should:
+Changes to ItemWorth should:
 
-- Preserve architecture.
-- Preserve formatting.
-- Preserve naming conventions.
-- Preserve storage compatibility.
-- Preserve offline functionality.
-- Preserve accessibility.
-- Favor incremental improvements.
-- Keep changes narrowly scoped.
-- Avoid unnecessary complexity.
+- Preserve the existing architecture
+- Preserve established formatting
+- Preserve naming conventions
+- Preserve inventory-storage compatibility
+- Preserve supported backup compatibility
+- Preserve offline functionality
+- Preserve accessibility
+- Remain narrowly scoped
+- Favor incremental improvements
+- Avoid unnecessary complexity
+- Include appropriate verification
 
-The goal is for every milestone to feel like a natural evolution of the existing codebase rather than a rewrite.
+The goal is for each release to feel like a controlled evolution of the existing application rather than a rewrite.
 
 ---
 
-# License
+## License
 
 Copyright © 2026 Dani Terry.
 
 All rights reserved.
+
+The source code is publicly viewable, but no permission is granted to copy, modify, distribute, sublicense, or commercially reuse it unless separate written permission is provided by the copyright holder.
